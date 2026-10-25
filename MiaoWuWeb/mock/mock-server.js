@@ -47,10 +47,12 @@ module.exports = app => {
   // es6 polyfill
   require('@babel/register')
 
-  // parse app.body
+  // parse app.body, only for mock routes: consuming the body of other requests
+  // would leave nothing for the dev-server proxy to forward to the backend
   // https://expressjs.com/en/4x/api.html#req.body
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({
+  const mockPrefix = `${process.env.VUE_APP_BASE_API}/vue-element-admin`
+  app.use(mockPrefix, bodyParser.json())
+  app.use(mockPrefix, bodyParser.urlencoded({
     extended: true
   }))
 
