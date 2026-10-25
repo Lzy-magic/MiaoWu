@@ -21,7 +21,7 @@ public class AnimalController {
     }
 
     @NoneAuth
-    @GetMapping(value = "{id}")
+    @GetMapping(value = "{id:\\d+}")
     APIResult findAnimalById(@PathVariable  Long id){
         return animalService.findById(id);
     }
@@ -34,6 +34,14 @@ public class AnimalController {
     @NoneAuth
     @GetMapping(value = "userId={userId}")
     APIResult findFoundAnimalByUserId(@PathVariable Long userId){
+        return animalService.findFoundAnimalByUserId(userId);
+    }
+
+
+    /* Query-string variant: /animals?userId=1 (legacy /animals/userId=1 still works). */
+    @NoneAuth
+    @GetMapping(value = "", params = "userId")
+    APIResult findFoundAnimalByUserIdQuery(@RequestParam Long userId) {
         return animalService.findFoundAnimalByUserId(userId);
     }
 
