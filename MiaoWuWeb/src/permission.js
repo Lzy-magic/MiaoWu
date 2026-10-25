@@ -34,8 +34,8 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          await store.dispatch('user/getInfo',getToken());
-          let roles = ['admin'];
+          await store.dispatch('user/getInfo', getToken())
+          const roles = ['admin']
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
 
@@ -48,7 +48,7 @@ router.beforeEach(async(to, from, next) => {
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
-          console.log(error);
+          console.log(error)
           Message.error('Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()

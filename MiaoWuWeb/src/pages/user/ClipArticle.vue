@@ -1,11 +1,9 @@
-<template>
-    
-</template>
+<template />
 
 <script>
-    export default {
-        name: "ClipArticle"
-    }
+export default {
+  name: 'ClipArticle'
+}
 </script>
 
 <style scoped>

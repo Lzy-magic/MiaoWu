@@ -3,37 +3,50 @@
     <div v-if="JSON.stringify(articles) === '{}'">
       <span>没有相关文章信息哦~</span>
     </div>
-    <div class="articles" v-for="(article,index) in articles" v-bind:key="index">
+    <div v-for="(article,index) in articles" :key="index" class="articles">
       <div class="post">
         <div class="user-block">
-          <img class="img-circle"
-               :src="'https://wpimg.wallstcn.com/57ed425a-c71e-4201-9428-68760c0537c4.jpg'+avatarPrefix">
-<!--          <span class="username text-muted">{{article.title}}</span>-->
-          <el-link type="primary" @click="toArticleDetail(article.id)" style="left:10px; position:relative">{{article.title}}</el-link>
-          <span class="description">{{article.authorName}}     {{new Date(article.lastUpdate).getTime() | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
-          <el-button v-if="article.authorId === userId" slot="reference" type="primary"
-                     style="right: 50px; position: absolute" @click="updateArticle(article.id)">修改文章</el-button>
+          <img
+            class="img-circle"
+            :src="'https://wpimg.wallstcn.com/57ed425a-c71e-4201-9428-68760c0537c4.jpg'+avatarPrefix"
+          >
+          <!--          <span class="username text-muted">{{article.title}}</span>-->
+          <el-link type="primary" style="left:10px; position:relative" @click="toArticleDetail(article.id)">{{ article.title }}</el-link>
+          <span class="description">{{ article.authorName }}     {{ new Date(article.lastUpdate).getTime() | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <el-button
+            v-if="article.authorId === userId"
+            slot="reference"
+            type="primary"
+            style="right: 50px; position: absolute"
+            @click="updateArticle(article.id)"
+          >修改文章</el-button>
           <el-popconfirm
-            confirmButtonText='删除'
-            cancelButtonText='手滑了'
+            confirm-button-text="删除"
+            cancel-button-text="手滑了"
             icon="el-icon-info"
-            iconColor="red"
+            icon-color="red"
             title="确定删除文章吗？"
             @onConfirm="delArticle(article.id)"
           >
-            <el-button v-if="article.authorId === userId" slot="reference" type="danger" icon="el-icon-delete" circle
-                       style="right: 0px; position: absolute"></el-button>
+            <el-button
+              v-if="article.authorId === userId"
+              slot="reference"
+              type="danger"
+              icon="el-icon-delete"
+              circle
+              style="right: 0px; position: absolute"
+            />
           </el-popconfirm>
         </div>
         <p>
-          {{article.content}}
+          {{ article.content }}
         </p>
         <ul class="list-inline">
           <li>
-          <span class="link-black text-sm">
-            {{article.thumbUp}}
-            <img src="@/static/like.jpg" @click="handleLike(article)" alt="" style="height:10px"/>
-          </span>
+            <span class="link-black text-sm">
+              {{ article.thumbUp }}
+              <img src="@/static/like.jpg" alt="" style="height:10px" @click="handleLike(article)">
+            </span>
           </li>
         </ul>
       </div>
@@ -43,112 +56,111 @@
 
 <script>
 
-  import request from '@/utils/request'
-  import settings from '@/settings'
-  import {ResultCode} from '@/utils/ResultCode'
-  import qs from 'querystring'
-  import {parseTime} from "../../../utils";
-  import * as Vue from "autoprefixer/lib/declaration";
+import request from '@/utils/request'
+import settings from '@/settings'
+import { ResultCode } from '@/utils/ResultCode'
+import qs from 'querystring'
+import { parseTime } from '../../../utils'
+import * as Vue from 'autoprefixer/lib/declaration'
 
-  const avatarPrefix = '?imageView2/1/w/80/h/80';
-  const carouselPrefix = '?imageView2/2/h/440';
+const avatarPrefix = '?imageView2/1/w/80/h/80'
+const carouselPrefix = '?imageView2/2/h/440'
 
-  export default {
-    name: "ArticleList",
-    data() {
-      return {
-        avatarPrefix: '',
-        carouselPrefix: '',
-      }
-    },
-    props: {
-      articles: {
-        type: Array,
-        default: () => {
-          return {
-            thumbUp: 0
-          }
+export default {
+  name: 'ArticleList',
+  props: {
+    articles: {
+      type: Array,
+      default: () => {
+        return {
+          thumbUp: 0
         }
       }
-    },
-    computed: {
-      userId() {
-        return this.$store.getters.id;
+    }
+  },
+  data() {
+    return {
+      avatarPrefix: '',
+      carouselPrefix: ''
+    }
+  },
+  computed: {
+    userId() {
+      return this.$store.getters.id
+    }
+  },
+  mounted() {
+  },
+  methods: {
+    handleLike(article) {
+      const self = this
+      const url = settings.apiUrl + 'thumbs'
+      const form = {
+        'userId': self.$store.getters.id,
+        'articleId': article.id
       }
+      request.request({
+        url,
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+
+        },
+        data: qs.stringify(form)
+      }).then((result, error) => {
+        if (error) {
+          return
+        }
+        if (result.code === ResultCode.SuccessCode) {
+          self.$set(article, 'thumbUp', article.thumbUp + 1)
+          // article.thumbUp++;
+          this.$message.success('点赞成功喵~')
+        } else if (result.code === ResultCode.CancelSuccessCode) {
+          self.$set(article, 'thumbUp', article.thumbUp - 1)
+          this.$message.success('取消点赞成功喵~')
+          // article.thumbUp--;
+        } else if (result.code === ResultCode.ServerInnerError) {
+          this.$message.error('服务器出错喵~')
+          this.loading = false
+        }
+      })
     },
-    methods: {
-      handleLike(article) {
-        let self = this;
-        let url = settings.apiUrl + "thumbs";
-        let form = {
-          'userId': self.$store.getters.id,
-          'articleId': article.id
-        };
-        request.request({
-          url,
-          method: "post",
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-
-          },
-          data: qs.stringify(form)
-        }).then((result, error) => {
-          if (error) {
-            return;
-          }
-          if (result.code === ResultCode.SuccessCode) {
-            self.$set(article, 'thumbUp', article.thumbUp + 1);
-            // article.thumbUp++;
-            this.$message.success('点赞成功喵~');
-          } else if (result.code === ResultCode.CancelSuccessCode) {
-            self.$set(article, 'thumbUp', article.thumbUp - 1);
-            this.$message.success('取消点赞成功喵~');
-            // article.thumbUp--;
-          } else if (result.code === ResultCode.ServerInnerError) {
-            this.$message.error('服务器出错喵~');
-            this.loading = false;
-          }
-        })
-      },
-      delArticle(articleId) {
-        let self = this;
-        let url = settings.apiUrl + "articles";
-        let form = {
-          'id': articleId,
-        };
-        request.request({
-          url,
-          //todo 页面未响应
-          method: "delete",
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-
-          },
-          data: qs.stringify(form)
-        }).then((result, error) => {
-          if (error) {
-            return;
-          }
-          if (result.code === ResultCode.SuccessCode) {
-            this.$message.success('删除文章成功喵~');
-          } else if (result.code === ResultCode.ServerInnerError) {
-            this.$message.error('服务器出错喵~');
-          }
-        })
-      },
-      toArticleDetail(articleId) {
-        this.$router.push({path: '/article/articleDetail', query: {articleId: articleId}})
-      },
-      updateArticle(id){
-        //编辑器中获取文章信息
-        this.$router.push({path: '/article/editor', query: {articleId: id}})
+    delArticle(articleId) {
+      const self = this
+      const url = settings.apiUrl + 'articles'
+      const form = {
+        'id': articleId
       }
+      request.request({
+        url,
+        // todo 页面未响应
+        method: 'delete',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+
+        },
+        data: qs.stringify(form)
+      }).then((result, error) => {
+        if (error) {
+          return
+        }
+        if (result.code === ResultCode.SuccessCode) {
+          this.$message.success('删除文章成功喵~')
+        } else if (result.code === ResultCode.ServerInnerError) {
+          this.$message.error('服务器出错喵~')
+        }
+      })
     },
-    mounted() {
+    toArticleDetail(articleId) {
+      this.$router.push({ path: '/article/articleDetail', query: { articleId: articleId }})
+    },
+    updateArticle(id) {
+      // 编辑器中获取文章信息
+      this.$router.push({ path: '/article/editor', query: { articleId: id }})
     }
   }
+}
 </script>
-
 
 <style lang="scss" scoped>
   .user-block {
@@ -219,7 +231,6 @@
       }
     }
   }
-
 
   .box-center {
     margin: 0 auto;

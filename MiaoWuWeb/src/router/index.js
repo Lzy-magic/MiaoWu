@@ -56,9 +56,9 @@ export const constantRoutes = [
     hidden: true
   },
   {
-  path: '/register',
-  component: () => import('@/pages/user/register'),
-  hidden: true
+    path: '/register',
+    component: () => import('@/pages/user/register'),
+    hidden: true
   },
   {
     path: '/auth-redirect',
@@ -80,7 +80,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/article',
     children: [
-      {  
+      {
         path: 'article',
         component: () => import('@/pages/article/index'),
         name: 'Article',
@@ -140,28 +140,28 @@ export const asyncRoutes = [
     // alwaysShow: true, // will always show the root menu
     meta: {
       title: '文章中心',
-      icon: 'documentation',
+      icon: 'documentation'
     },
     children: [
       {
         path: 'list',
         component: () => import('@/pages/article/List'),
         name: 'article_list',
-        meta: { title: '文章列表', icon: 'documentation'}
+        meta: { title: '文章列表', icon: 'documentation' }
       },
       {
         path: 'editor',
         component: () => import('@/pages/article/Editor'),
         name: 'article_editor',
-        meta: { title: '编辑文章', icon: 'documentation'}
+        meta: { title: '编辑文章', icon: 'documentation' }
       },
       {
         path: 'articleDetail',
         name: 'article_detail',
         component: () => import('@/pages/article/articleDetail'),
         hidden: true,
-        meta: { title: '浏览文章', icon: 'documentation' },
-      },
+        meta: { title: '浏览文章', icon: 'documentation' }
+      }
     ]
   },
   {
@@ -171,15 +171,15 @@ export const asyncRoutes = [
     // alwaysShow: true, // will always show the root menu
     meta: {
       title: '动物中心',
-      icon: 'documentation',
+      icon: 'documentation'
     },
     children: [
       {
         path: 'editor',
         component: () => import('@/pages/animal/Editor'),
         name: 'article_list',
-        meta: { title: '发现动物', icon: 'documentation'}
-      },
+        meta: { title: '发现动物', icon: 'documentation' }
+      }
       // {
       //   path: 'postSave',
       //   component: () => import('@/pages/animal/postSave'),

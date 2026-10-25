@@ -16,24 +16,24 @@
 </template>
 
 <script>
-  import PanThumb from '@/components/PanThumb'
+import PanThumb from '@/components/PanThumb'
 
-  export default {
-    components: {PanThumb},
-    props: {
-      user: {
-        type: Object,
-        default: () => {
-          return {
-            name: '',
-            email: '',
-            avatar: '',
-            role: ''
-          }
+export default {
+  components: { PanThumb },
+  props: {
+    user: {
+      type: Object,
+      default: () => {
+        return {
+          name: '',
+          email: '',
+          avatar: '',
+          role: ''
         }
       }
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

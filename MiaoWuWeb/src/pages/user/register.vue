@@ -1,19 +1,24 @@
 <template>
   <div class="register-container">
-    <el-form ref="registerForm" :model="registerForm" :rules="rules" class="register-form" autocomplete="on"
-             label-position="left">
-
+    <el-form
+      ref="registerForm"
+      :model="registerForm"
+      :rules="rules"
+      class="register-form"
+      autocomplete="on"
+      label-position="left"
+    >
 
       <div class="title-container">
         <h3 class="title">
-          <el-button type="primary"  @click="back" style="position: absolute; left: 0"  >返回</el-button>
+          <el-button type="primary" style="position: absolute; left: 0" @click="back">返回</el-button>
           注册
         </h3>
       </div>
 
       <el-form-item prop="phone">
         <span class="svg-container">
-          <i class="el-icon-phone"></i>
+          <i class="el-icon-phone" />
         </span>
         <el-input
           ref="phone"
@@ -29,7 +34,7 @@
       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
         <el-form-item prop="password">
           <span class="svg-container">
-            <svg-icon icon-class="password"/>
+            <svg-icon icon-class="password" />
           </span>
           <el-input
             :key="passwordType"
@@ -39,13 +44,13 @@
             placeholder="密码"
             name="password"
             tabindex="2"
+            maxlength="16"
             @keyup.native="checkCapslock"
             @blur="capsTooltip = false"
             @keyup.enter.native="handleRegister"
-            maxlength="16"
           />
           <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
         </el-form-item>
       </el-tooltip>
@@ -53,7 +58,7 @@
       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
         <el-form-item prop="cpwd">
           <span class="svg-container">
-            <svg-icon icon-class="password"/>
+            <svg-icon icon-class="password" />
           </span>
           <el-input
             :key="passwordType"
@@ -63,20 +68,20 @@
             placeholder="再次输入密码"
             name="cpwd"
             tabindex="3"
+            maxlength="16"
             @keyup.native="checkCapslock"
             @blur="capsTooltip = false"
             @keyup.enter.native="handleRegister"
-            maxlength="16"
           />
           <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
           </span>
         </el-form-item>
       </el-tooltip>
 
       <el-form-item prop="username">
         <span class="svg-container">
-          <svg-icon icon-class="user"/>
+          <svg-icon icon-class="user" />
         </span>
         <el-input
           ref="name"
@@ -91,7 +96,7 @@
 
       <el-form-item prop="idCode">
         <span class="svg-container">
-          <i class="el-icon-bank-card"></i>
+          <i class="el-icon-bank-card" />
         </span>
         <el-input
           ref="idCode"
@@ -104,203 +109,204 @@
         />
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
-                 @click.native.prevent="handleRegister">注册
+      <el-button
+        :loading="loading"
+        type="primary"
+        style="width:100%;margin-bottom:30px;"
+        @click.native.prevent="handleRegister"
+      >注册
       </el-button>
 
     </el-form>
-
 
   </div>
 </template>
 
 <script>
-  import settings from '../../settings'
-  import request from '@/utils/request'
-  import qs from 'querystring'
-  import {ResultCode} from '@/utils/ResultCode'
-  import { parseStrToDate } from '@/utils/miaoWuUtils.js'
+import settings from '../../settings'
+import request from '@/utils/request'
+import qs from 'querystring'
+import { ResultCode } from '@/utils/ResultCode'
+import { parseStrToDate } from '@/utils/miaoWuUtils.js'
 
-
-  export default {
-    // TODO 确认密码，以及用户名的check
-    name: "register",
-    data() {
-      var self = this;
-      let phoneRegex = new RegExp("((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$");
-      let isPhoneMsg = "电话号码不合法";
-      let isPhone = (rule, value, callback) => {
-        self.validator(rule, value, callback, isPhoneMsg, phoneRegex)
-      };
-      let idCodeRegex = new RegExp("^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$|^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$");
-      let isIdCodeMsg = "身份证长度在 15 到 18 个字符";
-      let isIdCode = (rule, value, callback) => {
-        self.validator(rule, value, callback, isIdCodeMsg, idCodeRegex);
-      };
-      //第一代15位？？第二代18位
-      let pwdRegex = new RegExp("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$");
-      let isPwdCodeMsg = "密码为至少6位，至多16位的包含数字和字母的组合";
-      let isPwd = (rule, value, callback) => {
-        self.validator(rule, value, callback, isPwdCodeMsg, pwdRegex);
-      };
-      let userNameRegex = new RegExp("^[a-zA-z\u2E80-\u9FFF]{0,12}$");
-      let isUserNameMsg = "用户名长度在 1 到 12 个字符";
-      let isUserName = (rule, value, callback) => {
-        self.validator(rule, value, callback, userNameRegex, isUserNameMsg);
-      };
-      let isSamePwdMsg = "两次密码不一致";
-      let isSamePwd = (rule, value, callback) => {
-        if(self.cpwd !== self.registerForm.password){
-          callback(new Error(isSamePwdMsg));
-        }
-      };
-      return {
-        registerForm: {},
-        cpwd: '',
-        rules: {
-          phone: [{required: true, trigger: 'blur'},
-            {validator: isPhone}
-          ],
-          password: [{required: true, trigger: 'blur'},
-            {validator: isPwd}
-          ],
-          cpwd: [{trigger: 'blur'},
-            {validator:isSamePwd}
-          ],
-          idCode: [{required: true, trigger: 'blur'},
-            {validator: isIdCode}
-          ],
-          userName: [{required: true, trigger: 'blur'},
-            {validator: isUserName}
-          ],
-        },
-        pickerOptions: {
-          disabledDate(time) {
-            return time.getTime() > Date.now();
-          },
-          shortcuts: [{
-            text: '今天',
-            onClick(picker) {
-              picker.$emit('pick', new Date());
-            }
-          }, {
-            text: '昨天',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
-              picker.$emit('pick', date);
-            }
-          }, {
-            text: '一周前',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', date);
-            }
-          }]
-        },
-        //todo 确认密码
-        capsTooltip: false,
-        passwordType: 'password',
-        loading: false,
-        // defaultDate: new Date().setFullYear(1997,9,9)
+export default {
+  // TODO 确认密码，以及用户名的check
+  name: 'Register',
+  data() {
+    var self = this
+    const phoneRegex = new RegExp('((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$')
+    const isPhoneMsg = '电话号码不合法'
+    const isPhone = (rule, value, callback) => {
+      self.validator(rule, value, callback, isPhoneMsg, phoneRegex)
+    }
+    const idCodeRegex = new RegExp('^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$|^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$')
+    const isIdCodeMsg = '身份证长度在 15 到 18 个字符'
+    const isIdCode = (rule, value, callback) => {
+      self.validator(rule, value, callback, isIdCodeMsg, idCodeRegex)
+    }
+    // 第一代15位？？第二代18位
+    const pwdRegex = new RegExp('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$')
+    const isPwdCodeMsg = '密码为至少6位，至多16位的包含数字和字母的组合'
+    const isPwd = (rule, value, callback) => {
+      self.validator(rule, value, callback, isPwdCodeMsg, pwdRegex)
+    }
+    const userNameRegex = new RegExp('^[a-zA-z\u2E80-\u9FFF]{0,12}$')
+    const isUserNameMsg = '用户名长度在 1 到 12 个字符'
+    const isUserName = (rule, value, callback) => {
+      self.validator(rule, value, callback, userNameRegex, isUserNameMsg)
+    }
+    const isSamePwdMsg = '两次密码不一致'
+    const isSamePwd = (rule, value, callback) => {
+      if (self.cpwd !== self.registerForm.password) {
+        callback(new Error(isSamePwdMsg))
       }
-
+    }
+    return {
+      registerForm: {},
+      cpwd: '',
+      rules: {
+        phone: [{ required: true, trigger: 'blur' },
+          { validator: isPhone }
+        ],
+        password: [{ required: true, trigger: 'blur' },
+          { validator: isPwd }
+        ],
+        cpwd: [{ trigger: 'blur' },
+          { validator: isSamePwd }
+        ],
+        idCode: [{ required: true, trigger: 'blur' },
+          { validator: isIdCode }
+        ],
+        userName: [{ required: true, trigger: 'blur' },
+          { validator: isUserName }
+        ]
+      },
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now()
+        },
+        shortcuts: [{
+          text: '今天',
+          onClick(picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一周前',
+          onClick(picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
+        }]
+      },
+      // todo 确认密码
+      capsTooltip: false,
+      passwordType: 'password',
+      loading: false
+      // defaultDate: new Date().setFullYear(1997,9,9)
+    }
+  },
+  methods: {
+    back() {
+      this.$router.go(-1)
     },
-    methods: {
-      back() {
-        this.$router.go(-1);
-      },
-      validator(rule, value, callback, message, regex) {
-        if (!regex.test(value)) {
-          return callback(new Error(message))
-        } else {
-          callback()
-        }
-      },
-      checkCapslock(e) {
-        const {key} = e
-        this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
-      },
-      showPwd() {
-        if (this.passwordType === 'password') {
-          this.passwordType = ''
-        } else {
-          this.passwordType = 'password'
-        }
-        this.$nextTick(() => {
-          this.$refs.password.focus()
-        })
-      },
-      getInfoFromIdCode(idCode) {
-        //获取出生日期
-        var birthday = idCode.substring(6, 10) + "-" + idCode.substring(10, 12) + "-" + idCode.substring(12, 14);
-        // birthday = parseStrToDate(birthday);
-        this.registerForm.birthday = birthday;
+    validator(rule, value, callback, message, regex) {
+      if (!regex.test(value)) {
+        return callback(new Error(message))
+      } else {
+        callback()
+      }
+    },
+    checkCapslock(e) {
+      const { key } = e
+      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    },
+    showPwd() {
+      if (this.passwordType === 'password') {
+        this.passwordType = ''
+      } else {
+        this.passwordType = 'password'
+      }
+      this.$nextTick(() => {
+        this.$refs.password.focus()
+      })
+    },
+    getInfoFromIdCode(idCode) {
+      // 获取出生日期
+      var birthday = idCode.substring(6, 10) + '-' + idCode.substring(10, 12) + '-' + idCode.substring(12, 14)
+      // birthday = parseStrToDate(birthday);
+      this.registerForm.birthday = birthday
 
-        //获取性别
-        if (parseInt(idCode.substr(16, 1)) % 2 === 1) {
-          this.registerForm.gender = 'man';
-        } else {
-          this.registerForm.gender = 'woman';
-        }
+      // 获取性别
+      if (parseInt(idCode.substr(16, 1)) % 2 === 1) {
+        this.registerForm.gender = 'man'
+      } else {
+        this.registerForm.gender = 'woman'
+      }
     },
     handleRegister() {
-      this.loading = true;
-      this.$store.dispatch('user/register', this.registerForm);
-      //test
+      this.loading = true
+      this.$store.dispatch('user/register', this.registerForm)
+      // test
       // this.registerForm = {
       //   name: '小小',
       //   password: 'icelzyREMOVED_PASSWORD',
       //   phone: '18300000000',
       //   idCode: '450881199708081173',
       // }
-      if(Object.keys(this.registerForm).length !== 4 && this.cpwd !== ''){
-        this.$message.error('请完善信息后再注册喵~');
-        this.loading = false;
-        return ;
+      if (Object.keys(this.registerForm).length !== 4 && this.cpwd !== '') {
+        this.$message.error('请完善信息后再注册喵~')
+        this.loading = false
+        return
       }
-      this.getInfoFromIdCode(this.registerForm.idCode);
+      this.getInfoFromIdCode(this.registerForm.idCode)
       this.$refs.registerForm.validate(valid => {
-        valid = true;
+        valid = true
         if (valid) {
-          let url = settings.apiUrl + 'users';
+          const url = settings.apiUrl + 'users'
           request.request({
             url,
-            method: "post",
+            method: 'post',
             headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
+              'Content-Type': 'application/x-www-form-urlencoded'
 
             },
             data: qs.stringify(this.registerForm)
           }).then((result, error) => {
             if (error) {
-              this.loading = false;
-              return;
+              this.loading = false
+              return
             }
             if (result.code === ResultCode.SuccessCode) {
-              this.loading = false;
-              this.$message({ message: '注册成功喵~', type: 'success' });
-              this.loginForm.username = this.registerForm.username;
-              this.loginForm.password = this.registerForm.password;
-              this.$router.push({path: this.redirect || '/', query: this.otherQuery});
+              this.loading = false
+              this.$message({ message: '注册成功喵~', type: 'success' })
+              this.loginForm.username = this.registerForm.username
+              this.loginForm.password = this.registerForm.password
+              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
             } else if (result.code === ResultCode.ServerInnerError) {
-              this.$message.error('服务器出错喵~');
-              this.loading = false;
-            } else if(result.code === ResultCode.DATA_ALREADY_EXISTEDINT){
-              this.$message.error('该电话号码已经被注册喵~');
-              this.loading = false;
+              this.$message.error('服务器出错喵~')
+              this.loading = false
+            } else if (result.code === ResultCode.DATA_ALREADY_EXISTEDINT) {
+              this.$message.error('该电话号码已经被注册喵~')
+              this.loading = false
             }
           })
         } else {
-          this.$message.error('注册信息不合法喵~');
-          this.loading = false;
+          this.$message.error('注册信息不合法喵~')
+          this.loading = false
         }
-      });
-      this.registerForm = {};
+      })
+      this.registerForm = {}
     }
   }
-  }
+}
 </script>
 <style lang="scss">
   /* 修复input 背景不协调 和光标变色 */
