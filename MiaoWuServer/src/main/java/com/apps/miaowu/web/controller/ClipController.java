@@ -21,7 +21,7 @@ public class ClipController {
 
     @NoneAuth
     @GetMapping(value = "{userId}")
-    public APIResult getClipArticle(Long userId){
+    public APIResult getClipArticle(@PathVariable Long userId){
         return articleService.findClipArticleWithAuthorNameByUserIdOrderByUpdateDesc(userId);
     }
 

@@ -8,7 +8,7 @@ spring:
       cluster-nodes: localhost:9300
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/miaowu?charactterEncoding=utf-8
+    url: jdbc:mysql://127.0.0.1:3306/miaowu?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: ${DB_USERNAME:miaowu}
     password: ${DB_PASSWORD:changeme}
   security:

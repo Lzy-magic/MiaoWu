@@ -61,8 +61,8 @@ public class ArticleController {
         return articleService.findAllWithClipByUserIdOrderByUpdateDesc(userId);
     }
 
-    @DeleteMapping(value = "{id}")
-    public APIResult deleteById(Long id) {
+    @DeleteMapping(value = "{id:\\d+}")
+    public APIResult deleteById(@PathVariable Long id) {
         return articleService.deleteById(id);
     }
 
@@ -73,7 +73,7 @@ public class ArticleController {
     }
 
     @NoneAuth
-    @GetMapping(value = "{id}")
+    @GetMapping(value = "{id:\\d+}")
     APIResult cascadeFindById(@PathVariable Long id) {
         return articleService.cascadeFindById(id);
     }
@@ -87,6 +87,43 @@ public class ArticleController {
     @NoneAuth
     @GetMapping(value = "fansId={fansId}")
     APIResult findFollowsArticleByUserIdOrderByUpdateDesc(@PathVariable Long fansId) {
+        return articleService.findFollowsArticleByUserIdOrderByUpdateDesc(fansId);
+    }
+
+
+    /*
+     * Query-string variants of the routes above. The legacy path-style URLs
+     * (e.g. /articles/page=1&count=10) are kept for backward compatibility;
+     * the "params" conditions make /articles?page=1&count=10 etc. reachable
+     * instead of falling through to findAll() or /{id}.
+     */
+    @NoneAuth
+    @GetMapping(value = "", params = {"page", "count"})
+    public APIResult findArticleWithLabelByPageQuery(@RequestParam Integer page, @RequestParam Integer count) {
+        return articleService.findArticleWithLabelByPage(page, count);
+    }
+
+    @NoneAuth
+    @GetMapping(value = "", params = {"key", "value"})
+    public APIResult findArticleWithTitleFuzzilyQuery(@RequestParam String key, @RequestParam String value) {
+        return articleService.findArticleByKeyAndValueFuzzily(key, value);
+    }
+
+    @NoneAuth
+    @GetMapping(value = "", params = {"with=clips", "userId"})
+    public APIResult findAllWithClipByUserIdQuery(@RequestParam Long userId) {
+        return articleService.findAllWithClipByUserIdOrderByUpdateDesc(userId);
+    }
+
+    @NoneAuth
+    @GetMapping(value = "", params = "authorId")
+    public APIResult findByAuthorIdQuery(@RequestParam Long authorId) {
+        return articleService.findArticleByAuthorIdOrderByUpdateDesc(authorId);
+    }
+
+    @NoneAuth
+    @GetMapping(value = "", params = "fansId")
+    public APIResult findFollowsArticleByFansIdQuery(@RequestParam Long fansId) {
         return articleService.findFollowsArticleByUserIdOrderByUpdateDesc(fansId);
     }
 
