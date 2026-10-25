@@ -23,7 +23,6 @@
 import request from '@/utils/request'
 import settings from '../../settings'
 import { ResultCode } from '@/utils/ResultCode'
-import qs from 'querystring'
 
 export default {
   name: 'Index',

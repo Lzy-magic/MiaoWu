@@ -67,7 +67,6 @@ const actions = {
 
   // get user info
   getInfo({ commit, state }) {
-    var self = this
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         if (state.token === 'visitor') {
@@ -77,7 +76,7 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { id, password, phone, idCode, name, introduction } = data.user
+        const { id, password, phone, idCode, name } = data.user
         const roles = ['admin']
         const avatar = '@/static/profile.jpg'
         commit('SET_USERINFO', data)

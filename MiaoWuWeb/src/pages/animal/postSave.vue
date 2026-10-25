@@ -77,7 +77,7 @@ export default {
         } else if (res.code === ResultCode.BadRequest) {
           self.$message.error(res.message)
           this.loading = false
-          reject()
+          return
         } else if (res.code === ResultCode.ServerInnerError) {
           this.$message.error('服务器出错喵~')
           this.loading = false
@@ -105,7 +105,7 @@ export default {
         } else if (res.code === ResultCode.BadRequest) {
           self.$message.error(res.message)
           this.loading = false
-          reject()
+          return
         } else if (res.code === ResultCode.ServerInnerError) {
           this.$message.error('服务器出错喵~')
           this.loading = false
@@ -138,7 +138,7 @@ export default {
         } else if (res.code === ResultCode.BadRequest) {
           self.$message.error(res.message)
           this.loading = false
-          reject()
+          return
         } else if (res.code === ResultCode.ServerInnerError) {
           this.$message.error('服务器出错喵~')
           this.loading = false

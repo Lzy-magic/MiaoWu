@@ -2,7 +2,7 @@
   <el-row>
     <el-col>
       <el-input v-model="input" placeholder="搜索" style="width:300px" />
-      <el-button type="primary" icon="el-icon-search" @click="">搜索</el-button>
+      <el-button type="primary" icon="el-icon-search" @click="search(input)">搜索</el-button>
     </el-col>
     <el-col v-for="(article, index) in articles" :key="index" :span="8" :offset="2">
       <el-card :body-style="{ padding: '0px' }" style="">
@@ -30,7 +30,6 @@ import request from '@/utils/request'
 import settings from '@/settings'
 import { ResultCode } from '@/utils/ResultCode'
 import qs from 'querystring'
-import { parseTime } from '@/utils/index'
 
 export default {
   name: 'List',
@@ -154,7 +153,6 @@ export default {
         if (error) {
           this.$message.error('服务器出错喵~')
         } else if (result.code === ResultCode.SuccessCode) {
-          article.clip = {}
           this.$message.success('搜索成功~')
         } else if (result.code === ResultCode.ServerInnerError) {
           this.$message.error('服务器出错喵~')

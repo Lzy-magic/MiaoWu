@@ -21,18 +21,17 @@ import request from '@/utils/request'
 import settings from '@/settings'
 import { ResultCode } from '@/utils/ResultCode'
 import qs from 'querystring'
-import { objectsContains } from '@/utils/miaoWuUtils'
 
 export default {
   name: 'UserList',
   props: {
     fans: {
       type: Array,
-      deafult: () => []
+      default: () => []
     },
     follows: {
       type: Array,
-      deafult: () => []
+      default: () => []
     }
   },
   data() {
@@ -77,7 +76,7 @@ export default {
             self.$message.error(res.message)
           } else if (res.code === ResultCode.ServerInnerError) {
             this.$message.error('服务器出错喵~')
-            reject()
+            return
           }
         })
     }

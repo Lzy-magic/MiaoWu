@@ -123,9 +123,7 @@
 import request from '@/utils/request'
 import settings from '@/settings'
 import { ResultCode } from '@/utils/ResultCode'
-import { parseTime } from '../../utils'
 import qs from 'querystring'
-import { objectsContains } from '@/utils/miaoWuUtils'
 
 export default {
   name: 'ArticleDetail',
@@ -236,7 +234,7 @@ export default {
           } else if (res.code === ResultCode.ServerInnerError) {
             self.commentLoading = false
             this.$message.error('服务器出错喵~')
-            reject()
+            return
           }
         })
     },
@@ -272,7 +270,7 @@ export default {
             self.$message.error(res.message)
           } else if (res.code === ResultCode.ServerInnerError) {
             this.$message.error('服务器出错喵~')
-            reject()
+            return
           }
         })
     },
@@ -303,7 +301,7 @@ export default {
         } else if (res.code === ResultCode.BadRequest) {
           self.$message.error(res.message)
           this.loading = false
-          reject()
+          return
         } else if (res.code === ResultCode.ServerInnerError) {
           this.$message.error('服务器出错喵~')
           this.loading = false

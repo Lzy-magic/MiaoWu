@@ -14,19 +14,19 @@
                 <userInfo :user-info="this.$store.state.userInfo" />
               </el-tab-pane>
               <el-tab-pane label="收藏文章列表" name="clipArticles">
-                <ArticleList :articles="this.clipArticles" />
+                <ArticleList :articles="clipArticles" />
               </el-tab-pane>
               <el-tab-pane label="我发布的文章" name="myArticles">
-                <ArticleList :articles="this.myArticles" />
+                <ArticleList :articles="myArticles" />
               </el-tab-pane>
               <el-tab-pane label="我关注的人的动态" name="followArticles">
-                <ArticleList :articles="this.followArticles" />
+                <ArticleList :articles="followArticles" />
               </el-tab-pane>
               <el-tab-pane label="我关注的人" name="follows">
-                <UserList :follows="this.follows" />
+                <UserList :follows="follows" />
               </el-tab-pane>
               <el-tab-pane label="我的粉丝" name="fans">
-                <UserList :fans="this.fans" />
+                <UserList :fans="fans" />
               </el-tab-pane>
             </el-tabs>
           </el-card>
@@ -46,7 +46,6 @@ import request from '@/utils/request'
 import settings from '../../settings'
 import { ResultCode } from '@/utils/ResultCode'
 import UserList from './components/UserList'
-import qs from 'querystring'
 
 export default {
   name: 'Profile',

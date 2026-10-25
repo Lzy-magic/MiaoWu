@@ -60,11 +60,6 @@ import request from '@/utils/request'
 import settings from '@/settings'
 import { ResultCode } from '@/utils/ResultCode'
 import qs from 'querystring'
-import { parseTime } from '../../../utils'
-import * as Vue from 'autoprefixer/lib/declaration'
-
-const avatarPrefix = '?imageView2/1/w/80/h/80'
-const carouselPrefix = '?imageView2/2/h/440'
 
 export default {
   name: 'ArticleList',
@@ -126,7 +121,6 @@ export default {
       })
     },
     delArticle(articleId) {
-      const self = this
       const url = settings.apiUrl + 'articles'
       const form = {
         'id': articleId

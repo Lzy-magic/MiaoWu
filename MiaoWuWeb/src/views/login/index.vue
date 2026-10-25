@@ -82,15 +82,11 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
-import SocialSign from './components/SocialSignin'
-import request from '@/utils/request'
-import qs from 'querystring'
 import settings from '../../settings'
 import { ResultCode } from '../../utils/ResultCode'
 
 export default {
   name: 'Login',
-  components: { SocialSign },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
@@ -171,7 +167,6 @@ export default {
     },
     handleLogin() {
       // this.redirect = '@/pages/article/List';
-      var self = this
       this.loading = true
       this.$refs.loginForm.validate(valid => {
         if (settings.isDebug) {

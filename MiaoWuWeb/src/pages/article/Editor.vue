@@ -59,7 +59,7 @@
           <!--          <el-button @click="submit(0)">保存到草稿箱</el-button>-->
           <el-button type="primary" @click="submit(1)">发表文章</el-button>
         </template>
-        <template v-else="from==post">
+        <template v-else>
           <el-button type="primary" @click="submit(1)">保存修改</el-button>
         </template>
       </div>
@@ -106,7 +106,6 @@ export default {
     this.getFoundAnimals()
     var from = this.$route.query.from
     this.from = from
-    var self = this
     this.getArticle()
   },
   methods: {
@@ -326,7 +325,7 @@ export default {
       }
       request.request(config).then(resp => {
         if (resp.code === ResultCode.SuccessCode) {
-
+          // nothing else to do on success
         }
       })
     },
@@ -353,7 +352,7 @@ export default {
             self.$message.error('还没有发现动物哦~')
             // self.$message.error(res.message);
             this.loading = false
-            reject()
+            return
           } else if (res.code === ResultCode.ServerInnerError) {
             this.$message.error('服务器出错喵~')
             this.loading = false

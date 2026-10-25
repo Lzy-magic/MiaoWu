@@ -127,7 +127,6 @@ import settings from '../../settings'
 import request from '@/utils/request'
 import qs from 'querystring'
 import { ResultCode } from '@/utils/ResultCode'
-import { parseStrToDate } from '@/utils/miaoWuUtils.js'
 
 export default {
   // TODO 确认密码，以及用户名的check
