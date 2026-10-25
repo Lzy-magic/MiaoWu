@@ -90,7 +90,7 @@ Browser --> MiaoWuWeb (Vue 2, port 9527) --HTTP/JSON--> MiaoWuServer (Spring Boo
 | axios | 0.18.1 |
 | ECharts | 4.2.1 |
 | @vue/cli-service | 3.5.3 |
-| node-sass / sass-loader | ^4.9.0 / ^7.1.0 |
+| sass (dart-sass) / sass-loader | ~1.32.13 / ^10.4.1 |
 
 ## Repository Layout
 
@@ -132,7 +132,7 @@ MiaoWu/
 | Redis | 5+ | Stores login tokens |
 | RabbitMQ | 3.x | Needed at startup because of the `@RabbitListener` |
 | Elasticsearch | 7.x, **optional** | Only used by the fuzzy article search; the app starts without it |
-| Node.js | 16 (via nvm) | See the node-sass note below |
+| Node.js | 16 (via nvm) | Uses dart-sass, no native build needed |
 | Lombok IDE plugin | - | Needed for IDE compilation |
 
 ## Setup
@@ -172,7 +172,7 @@ sudo rabbitmqctl set_permissions -p / <mq_user> ".*" ".*" ".*"
 
 ### 3. Elasticsearch (optional)
 
-`ElasticSearchConfig` connects to `http://127.0.0.1:9200` (hard-coded). Without it, only the fuzzy search endpoint fails.
+`ElasticSearchConfig` builds the REST client from `miaowu.elasticsearch.host` / `port` / `scheme` (default `localhost` / `9200` / `http`; override with `ES_HOST`, `ES_PORT`, `ES_SCHEME` or `--miaowu.elasticsearch.port=...`). Use the HTTP port (9200), not the transport port (9300). Without Elasticsearch, only the fuzzy search endpoint fails.
 
 ## Configuration
 
@@ -189,7 +189,7 @@ sudo rabbitmqctl set_permissions -p / <mq_user> ".*" ".*" ".*"
 | `spring.redis.jedis.pool.*` | max-idle 500, min-idle 50, max-wait -1, max-active -1 | Jedis pool |
 | `spring.cache.redis.time-to-live` | `-1` | Cache TTL |
 | `spring.rabbitmq.host` / `port` / `username` / `password` | `127.0.0.1` / `5672` / `<mq_user>` / `<mq_password>` | RabbitMQ |
-| `spring.data.elasticsearch.cluster-name` / `cluster-nodes` | `my-cluster` / `localhost:9300` | ES transport settings (the REST client in code uses 9200) |
+| `miaowu.elasticsearch.host` / `port` / `scheme` | `${ES_HOST:localhost}` / `${ES_PORT:9200}` / `${ES_SCHEME:http}` | Elasticsearch REST endpoint |
 | `mybatis.mapper-locations` | `classpath:/mapper/**/*.xml` | Mapper XML location |
 | `eureka.*` | client disabled | Leftover Eureka settings |
 | `logging.config` | `classpath:log4j2.yml` | Logging config |
@@ -224,6 +224,15 @@ curl http://localhost:8088/articles/1
 
 Swagger UI: `http://localhost:8088/swagger-ui.html`.
 
+### Running the backend tests
+
+```bash
+cd MiaoWuServer
+mvn test
+```
+
+The tests need the local MySQL `miaowu` schema, Redis and RabbitMQ (same as the app). They do not depend on existing data: `src/test/resources/sql/test-seed.sql` inserts a test user (placeholder phone `19900000000`), animal and article with ids `900001` before each test, and `test-cleanup.sql` removes them afterwards. The Elasticsearch test is skipped automatically (JUnit `Assumptions`) when no node answers at the configured address.
+
 ## Running the Frontend
 
 ```bash
@@ -235,16 +244,19 @@ npm run dev        # http://localhost:9527
 
 Other scripts: `npm run build:prod`, `npm run build:stage`, `npm run lint`, `npm run test:unit`.
 
-**node-sass note:** `node-sass@^4` has no binary for Node 16 and fails to build. Switching to dart-sass does not help either, because the styles use the `/deep/` selector. A working local setup is:
+**Sass:** styles are compiled with dart-sass (`sass` + `sass-loader@10`), so a plain `npm install` works on Node 16. Use `::v-deep` for deep selectors (`/deep/` and `>>>` are not supported by dart-sass).
 
-```bash
-npm install --ignore-scripts
-npm install --no-save --legacy-peer-deps node-sass@6.0.1 sass-loader@10.4.1
-```
+**Lint:** `npm run lint` checks all of `src/` (it is no longer excluded in `.eslintignore`).
 
-(The other option is to use Node 14 with the original versions.)
+**Backend connection (dev proxy):** API calls go to `VUE_APP_BASE_API` (`/dev-api` in `.env.development`). The dev server proxies that prefix to the backend and strips it, e.g. `http://localhost:9527/dev-api/animals` -> `http://localhost:8088/animals`. Settings in `.env.development` (or `.env.development.local` / shell env):
 
-**Backend connection:** `.env.development` sets `VUE_APP_BASE_API = '/dev-api'`, and the dev server mounts the mock server from `mock/mock-server.js`. `vue.config.js` has **no proxy** to the backend on 8088, so the dev UI runs against mock data unless you add a `devServer.proxy` entry or change the base API.
+| Variable | Default | Meaning |
+|---|---|---|
+| `VUE_APP_PROXY_TARGET` | `http://localhost:8088` | Backend the dev proxy forwards to |
+| `VUE_APP_USE_MOCK` | `true` | `false` disables the mock server; mock routes live under `/dev-api/vue-element-admin/...` and are matched before the proxy |
+| `VUE_APP_API_URL` | empty | If set (e.g. `http://localhost:8088/`), the app calls the backend directly instead of through the proxy. `.env.production` / `.env.staging` set it, since built bundles have no dev proxy |
+
+Example: `VUE_APP_USE_MOCK=false npm run dev`.
 
 ## API Overview
 
@@ -295,19 +307,17 @@ These were found while setting up the develop branch:
 3. **JDBC URL typo:** `charactterEncoding` should be `characterEncoding`. Also, `com.mysql.jdbc.Driver` is deprecated with connector 8.x (use `com.mysql.cj.jdbc.Driver`).
 4. **SSL with newer databases:** the old TLS defaults fail against MariaDB 11 / MySQL 8. Use `useSSL=false` or configure TLS.
 5. **Credentials in `application.yml`:** real-looking credentials are committed. Move them to environment variables or a profile that is not committed.
-6. **Elasticsearch config mismatch:** `application.yml` points at transport port 9300, but `ElasticSearchConfig` hard-codes REST `127.0.0.1:9200`.
-7. **Path-variable routes:** `page={page}&count={count}` is matched as a single path segment and can collide with `/{id}`. `GET /articles/page=1&count=10` returned HTTP 400 (type conversion to `Long`). Query parameters would be more reliable.
-8. **Mapper XML bugs** in `mapper/extend/`:
+6. **Path-variable routes:** `page={page}&count={count}` is matched as a single path segment and can collide with `/{id}`. `GET /articles/page=1&count=10` returned HTTP 400 (type conversion to `Long`). Query parameters would be more reliable.
+7. **Mapper XML bugs** in `mapper/extend/`:
    - `ArticleMapperExtend.xml` uses `#{id.jdbcType=BIGINT}` (dot instead of comma) in 8 places.
    - `selectArticleWithLabelById` refers to alias `art`, which is never defined.
    - `selectCommentArticleByArticleId` selects `c.content`, a column that does not exist (it should be `comment_content`).
    - `selectLastUpdate` is an empty `SELECT`, and `UserMapperExtend.selectUserWithFollowsAndFansById` has no SQL.
    - `commentResultMap` maps column `date` to property `userId`.
    - `UserMapperExtend.ArticleResultMap` uses `thump_up` / `thumpUp` instead of `thumb_up`.
-9. **Interceptor whitelist:** `LoginInterceptor` compares the URI exactly, so wildcard entries such as `/webjars/**` never match.
-10. **CORS:** `allowedOrigins("*")` together with `allowCredentials(true)` is rejected by browsers and by newer Spring versions.
-11. **Frontend build:** `node-sass@^4` does not build on Node 16+ (see above). The dev server uses mock data and does not proxy to the backend.
-12. **Image upload** writes into the servlet context real path, which is a temporary directory with embedded Tomcat, so uploads are lost on restart.
+8. **Interceptor whitelist:** `LoginInterceptor` compares the URI exactly, so wildcard entries such as `/webjars/**` never match.
+9. **CORS:** `allowedOrigins("*")` together with `allowCredentials(true)` is rejected by browsers and by newer Spring versions.
+10. **Image upload** writes into the servlet context real path, which is a temporary directory with embedded Tomcat, so uploads are lost on restart.
 
 ## License
 

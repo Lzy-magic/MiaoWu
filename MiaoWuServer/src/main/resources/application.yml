@@ -1,11 +1,13 @@
 #application.yml
 server:
   port: 8088
+# Elasticsearch REST endpoint used by ElasticSearchConfig (HTTP port, not the 9300 transport port)
+miaowu:
+  elasticsearch:
+    host: ${ES_HOST:localhost}
+    port: ${ES_PORT:9200}
+    scheme: ${ES_SCHEME:http}
 spring:
-  data:
-    elasticsearch:
-      cluster-name: my-cluster
-      cluster-nodes: localhost:9300
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/miaowu?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai

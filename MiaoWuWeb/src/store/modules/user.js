@@ -1,7 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
-import {ResultCode} from "../../utils/ResultCode";
+import { ResultCode } from '../../utils/ResultCode'
 
 const state = {
   token: getToken(),
@@ -27,19 +27,19 @@ const mutations = {
   SET_ROLES: (state, roles) => {
     state.roles = roles
   },
-  SET_USERINFO: (state, userInfo) =>{
+  SET_USERINFO: (state, userInfo) => {
     state.userInfo = userInfo
   },
-  SET_PASSWORD: (state, password) =>{
+  SET_PASSWORD: (state, password) => {
     state.password = password
   },
-  SET_IDCODE: (state, idCode) =>{
+  SET_IDCODE: (state, idCode) => {
     state.idCode = idCode
   },
-  SET_PHONE: (state, phone) =>{
+  SET_PHONE: (state, phone) => {
     state.phone = phone
   },
-  SET_USERID: (state,id) =>{
+  SET_USERID: (state, id) => {
     state.id = id
   }
 }
@@ -51,12 +51,12 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ phone: phone.trim(), password: password }).then(response => {
         const { data } = response
-        if(response.code === ResultCode.SuccessCode){
+        if (response.code === ResultCode.SuccessCode) {
           commit('SET_TOKEN', data.token)
           setToken(data.token)
           resolve(response)
-        } else{
-          //登录失败，ui处理
+        } else {
+          // 登录失败，ui处理
           resolve(response)
         }
       }).catch(error => {
@@ -67,20 +67,19 @@ const actions = {
 
   // get user info
   getInfo({ commit, state }) {
-    var self = this;
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        if(state.token === 'visitor'){
-          reject("visitor");
+        if (state.token === 'visitor') {
+          reject('visitor')
         }
         const { data } = response
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const {id, password, phone, idCode, name, introduction } = data.user;
-        let roles = ['admin'];
-        let avatar = "@/static/profile.jpg";
-        commit('SET_USERINFO',data)
+        const { id, password, phone, idCode, name } = data.user
+        const roles = ['admin']
+        const avatar = '@/static/profile.jpg'
+        commit('SET_USERINFO', data)
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
@@ -150,12 +149,12 @@ const actions = {
     })
   },
 
-  touristLogin({commit}){
-    return new Promise((resolve,rej) => {
+  touristLogin({ commit }) {
+    return new Promise((resolve, rej) => {
       commit('SET_ROLES', ['admin'])
-      commit('SET_TOKEN', "visitor")
-      setToken("visitor")
-      resolve();
+      commit('SET_TOKEN', 'visitor')
+      setToken('visitor')
+      resolve()
     })
   }
 }

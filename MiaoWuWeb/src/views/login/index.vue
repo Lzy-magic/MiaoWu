@@ -14,7 +14,7 @@
 
       <el-form-item prop="phone">
         <span class="svg-container">
-          <i class="el-icon-phone"></i>
+          <i class="el-icon-phone" />
         </span>
         <el-input
           ref="phone"
@@ -81,52 +81,48 @@
 </template>
 
 <script>
-import { validUsername } from "@/utils/validate";
-import SocialSign from "./components/SocialSignin";
-import request from "@/utils/request";
-import qs from "querystring";
-import settings from "../../settings";
-import { ResultCode } from "../../utils/ResultCode";
+import { validUsername } from '@/utils/validate'
+import settings from '../../settings'
+import { ResultCode } from '../../utils/ResultCode'
 
 export default {
-  name: "Login",
-  components: { SocialSign },
+  name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error("Please enter the correct user name"));
+        callback(new Error('Please enter the correct user name'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error("The password can not be less than 6 digits"));
+        callback(new Error('The password can not be less than 6 digits'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       loginForm: {
-        username: "admin",
-        phone: "18300000000",
-        password: "REMOVED_PASSWORD"
+        username: 'admin',
+        phone: '18300000000',
+        password: 'REMOVED_PASSWORD'
       },
       loginRules: {
         username: [
-          { required: true, trigger: "blur", validator: validateUsername }
+          { required: true, trigger: 'blur', validator: validateUsername }
         ],
         password: [
-          { required: true, trigger: "blur", validator: validatePassword }
+          { required: true, trigger: 'blur', validator: validatePassword }
         ]
       },
-      passwordType: "password",
+      passwordType: 'password',
       capsTooltip: false,
       loading: false,
       showDialog: false,
       // redirect: undefined,
       otherQuery: {}
-    };
+    }
   },
   watch: {
     // $route: {
@@ -144,91 +140,90 @@ export default {
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
-    if (this.loginForm.username === "") {
-      this.$refs.username.focus();
-    } else if (this.loginForm.password === "") {
-      this.$refs.password.focus();
+    if (this.loginForm.username === '') {
+      this.$refs.username.focus()
+    } else if (this.loginForm.password === '') {
+      this.$refs.password.focus()
     }
-    this.settings = settings;
+    this.settings = settings
   },
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
     checkCapslock(e) {
-      const { key } = e;
-      this.capsTooltip = key && key.length === 1 && key >= "A" && key <= "Z";
+      const { key } = e
+      this.capsTooltip = key && key.length === 1 && key >= 'A' && key <= 'Z'
     },
     showPwd() {
-      if (this.passwordType === "password") {
-        this.passwordType = "";
+      if (this.passwordType === 'password') {
+        this.passwordType = ''
       } else {
-        this.passwordType = "password";
+        this.passwordType = 'password'
       }
       this.$nextTick(() => {
-        this.$refs.password.focus();
-      });
+        this.$refs.password.focus()
+      })
     },
     handleLogin() {
       // this.redirect = '@/pages/article/List';
-      var self = this;
-      this.loading = true;
+      this.loading = true
       this.$refs.loginForm.validate(valid => {
         if (settings.isDebug) {
-          this.loading = false;
-          this.$message.info("开发者模式");
-          this.$router.push({ path: this.redirect || "/" });
+          this.loading = false
+          this.$message.info('开发者模式')
+          this.$router.push({ path: this.redirect || '/' })
           // this.userInfo = {};
-          return;
+          return
         }
         if (valid) {
-          this.$store.dispatch("user/login", this.loginForm)
+          this.$store.dispatch('user/login', this.loginForm)
             .then((result, error) => {
               if (error) {
-                this.loading = false;
-                return;
+                this.loading = false
+                return
               }
               if (result.code === ResultCode.SuccessCode) {
-                this.$router.push({ path: this.redirect || "/" });
-                this.$message.success("登录成功啦喵~");
+                this.$router.push({ path: this.redirect || '/' })
+                this.$message.success('登录成功啦喵~')
                 // let token = JSON.parse(result.data).token;
                 // window.localStorage.setItem("token", token);
               } else if (result.code === ResultCode.BadRequest) {
-                this.$message.error("账号或密码错误~");
+                this.$message.error('账号或密码错误~')
               } else if (result.code === ResultCode.ServerInnerError) {
-                this.$message.error("服务器出错啦~");
+                this.$message.error('服务器出错啦~')
               } else {
-                this.$message.error("账号或密码不能为空~");
+                this.$message.error('账号或密码不能为空~')
               }
-              this.loading = false;
-            });
+              this.loading = false
+            })
         } else {
-          console.log("error submit!!");
-          this.loading = false;
-          return false;
+          console.log('error submit!!')
+          this.loading = false
+          return false
         }
-      });
+      })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== "redirect") {
-          acc[cur] = query[cur];
+        if (cur !== 'redirect') {
+          acc[cur] = query[cur]
         }
-        return acc;
-      }, {});
+        return acc
+      }, {})
     },
     toRegister() {
-      console.log("register");
-      this.$router.push({ path: "/register" });
+      console.log('register')
+      this.$router.push({ path: '/register' })
     },
-    touristLogin(){
-      this.loading = false;
-      this.$store.dispatch("user/touristLogin").then(()=>{
-        this.$router.push({ path: this.redirect || "/" });
+    touristLogin() {
+      this.loading = false
+      this.$store.dispatch('user/touristLogin').then(() => {
+        this.$router.push({ path: this.redirect || '/' })
       })
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
