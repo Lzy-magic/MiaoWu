@@ -41,7 +41,10 @@ module.exports = {
   /**
    *
    */
-  apiUrl: 'http://localhost:8088/'
+  // Prefix for MiaoWu backend calls. Empty by default so requests go through the
+  // axios baseURL (VUE_APP_BASE_API) and, in development, the vue.config.js proxy.
+  // Set VUE_APP_API_URL (e.g. http://localhost:8088/) to call the backend directly.
+  apiUrl: process.env.VUE_APP_API_URL || ''
 
   // apiUrl: ''
 }

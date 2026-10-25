@@ -15,6 +15,13 @@ const name = defaultSettings.title || 'vue Element Admin' // page title
 // port = 9527 npm run dev OR npm run dev --port = 9527
 const port = process.env.port || process.env.npm_config_port || 9527 // dev port
 
+// Dev-server proxy: requests to VUE_APP_BASE_API (default /dev-api) are forwarded
+// to the MiaoWu backend with the prefix stripped, e.g. /dev-api/users/login -> http://localhost:8088/users/login.
+// Override the target with VUE_APP_PROXY_TARGET, disable the mock server with VUE_APP_USE_MOCK=false.
+const baseApi = process.env.VUE_APP_BASE_API || '/dev-api'
+const proxyTarget = process.env.VUE_APP_PROXY_TARGET || 'http://localhost:8088'
+const useMock = process.env.VUE_APP_USE_MOCK !== 'false'
+
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
   /**
@@ -36,7 +43,15 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+    proxy: {
+      [baseApi]: {
+        target: proxyTarget,
+        changeOrigin: true,
+        pathRewrite: { ['^' + baseApi]: '' }
+      }
+    },
+    // mock routes (under <baseApi>/vue-element-admin/...) are matched first, everything else is proxied
+    before: useMock ? require('./mock/mock-server.js') : undefined
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
