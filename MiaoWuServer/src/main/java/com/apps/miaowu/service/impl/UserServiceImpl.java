@@ -56,26 +56,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public APIResult getInfo(String token) {
-        //redis中存在该token
+        // The token exists in Redis
         if (tokenHelper.check(token)) {
-            //获取用户id
+            // Get the user id
             TokenModel tokenModel = tokenHelper.get(token);
             Long userId = Long.valueOf(tokenModel.getUserId());
 
-            //获取用户信息
+            // Get the user info
             User user = userMapper.selectByPrimaryKey(userId);
 
-            //获取关注信息和粉丝信息
+            // Get follows and fans
             APIResult follows = followService.findAllFollowsByUserId(userId);
             APIResult fans = followService.findAllFansByUserId(userId);
 
             Map<String, Object> res = new HashMap<>();
-            res.put("user", user);//用户信息
-            res.put("follows", follows.getData());//用户的关注信息
-            res.put("fans", fans.getData());//用户的粉丝信息
+            res.put("user", user);// user info
+            res.put("follows", follows.getData());// users this user follows
+            res.put("fans", fans.getData());// this user's fans
 
             return APIResult.newResult(ResultEnum.SUCCESS, res);
-        } else { //不存在该token
+        } else { // token not found
             return APIResult.newResult(ResultCode.BadRequest, "token out of date", null);
         }
     }
@@ -160,32 +160,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public APIResult login(String phone, String password) {
-        //输入不合法
+        // Invalid input
         try{
             varifyNullParam(phone, password);
         } catch (MiaowuException miaowuException){
             return APIResult.newResult(ResultEnum.ILLEGAL_PARAM, null);
 
         }
-        //查找用户
+        // Look up the user
         UserExample example = new UserExample();
         example.createCriteria().andPhoneEqualTo(phone);
         List<User> users = userMapper.selectByExample(example);
 
-        //电话号码无对应账号
+        // No account for this phone number
         if (users.size() == 0) {
             return APIResult.newResult(ResultEnum.NO_CONTENT, null);
         } else if (users.size() == 1) {
             User user = users.get(0);
-            //验证通过
+            // Verified
             if (user.getPassword().equals(password)) {
-                // 用户名密码验证通过后，生成token
+                // Generate a token after the credentials are verified
                 TokenModel model = tokenHelper.create(user.getId().toString());
                 return APIResult.newResult(ResultEnum.SUCCESS, model);
-            } else { //密码不正确
+            } else { // wrong password
                 return APIResult.newResult(ResultCode.BadRequest, "Incorrect password", null);
             }
-        } else {    //数据过多
+        } else {    // more than one record
             return APIResult.newResult(ResultCode.BadRequest, "too many users", null);
         }
     }
@@ -200,5 +200,5 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-//    todo 将info和getById整合为一个接口
+//    TODO: merge info and getById into one endpoint
 }

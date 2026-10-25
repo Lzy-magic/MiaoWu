@@ -31,7 +31,7 @@ public class ClipServiceImpl implements ClipService {
 
     @Override
     public APIResult addClipArticle(Long userId, Long articleId) {
-        // todo 一些意外情况的处理
+        // TODO: handle edge cases
         ClipExample clipExample = new ClipExample();
         clipExample.createCriteria().andUserIdEqualTo(userId).andArticleIdEqualTo(articleId);
         List<Clip> clips = clipMapper.selectByExample(clipExample);
@@ -51,7 +51,7 @@ public class ClipServiceImpl implements ClipService {
 
     @Override
     public APIResult deleteClipArticle(Long userId, Long articleId) {
-        // todo 一些意外情况的处理
+        // TODO: handle edge cases
         ClipExample example = new ClipExample();
         example.createCriteria().andArticleIdEqualTo(articleId).andUserIdEqualTo(userId);
         clipMapper.deleteByExample(example);

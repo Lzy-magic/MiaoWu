@@ -48,7 +48,7 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Override
     public APIResult findById(Long id) {
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(id);
         } catch (MiaowuException miaowuException) {
@@ -77,7 +77,7 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Override
     public APIResult add(Animal animal, Long userId) {
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(animal,userId);
         } catch (MiaowuException miaowuException) {

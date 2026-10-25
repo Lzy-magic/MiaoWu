@@ -17,7 +17,7 @@ public class Producer {
 
     public void produce(){
         String message = new Date() + "Beijing";
-        System.out.println("生产者生产信息=====" + message);
+        System.out.println("Producer sent message=====" + message);
         rabbitTemplate.convertAndSend("rabbitmq_queue", message);
     }
 }

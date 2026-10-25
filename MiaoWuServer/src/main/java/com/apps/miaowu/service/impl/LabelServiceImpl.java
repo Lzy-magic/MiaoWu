@@ -33,13 +33,13 @@ public class LabelServiceImpl implements LabelService {
             LabelExample labelExample =  new LabelExample();
             labelExample.createCriteria().andNameEqualTo(labelName);
             List<Label> labels = labelMapper.selectByExample(labelExample);
-            //无此标签，加入
+            // Label not found, add it
             if(labels.isEmpty()){
                 Label label = new Label();
                 label.setName(labelName);
-                //新增标签
+                // Create the label
                 labelMapper.insert(label);
-                //联表关联
+                // Link it to the article
                 ArticleLabel articleLabel = new ArticleLabel();
                 articleLabel.setArticleId(articleId);
                 articleLabel.setLabelId(label.getId());

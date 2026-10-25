@@ -17,11 +17,11 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Redis工具类
+ * Redis utility class
  *
  * @author WangFan
- * @date 2018-02-24 下午03:09:50
- * @version 1.1 (GitHub文档: https://github.com/whvcse/RedisUtil )
+ * @date 2018-02-24 03:09:50 PM
+ * @version 1.1 (GitHub docs: https://github.com/whvcse/RedisUtil )
  */
 
  @Component
@@ -40,10 +40,10 @@ public class RedisUtil {
         return this.redisTemplate;
     }
 
-    /** -------------------key相关操作--------------------- */
+    /** -------------------key operations--------------------- */
 
     /**
-     * 删除key
+     * Delete a key
      *
      * @param key
      */
@@ -52,7 +52,7 @@ public class RedisUtil {
     }
 
     /**
-     * 批量删除key
+     * Delete multiple keys
      *
      * @param keys
      */
@@ -61,7 +61,7 @@ public class RedisUtil {
     }
 
     /**
-     * 序列化key
+     * Serialize the key
      *
      * @param key
      * @return
@@ -71,7 +71,7 @@ public class RedisUtil {
     }
 
     /**
-     * 是否存在key
+     * Whether the key exists
      *
      * @param key
      * @return
@@ -81,7 +81,7 @@ public class RedisUtil {
     }
 
     /**
-     * 设置过期时间
+     * Set the expiration time
      *
      * @param key
      * @param timeout
@@ -93,7 +93,7 @@ public class RedisUtil {
     }
 
     /**
-     * 设置过期时间
+     * Set the expiration time
      *
      * @param key
      * @param date
@@ -104,7 +104,7 @@ public class RedisUtil {
     }
 
     /**
-     * 查找匹配的key
+     * Find keys matching a pattern
      *
      * @param pattern
      * @return
@@ -114,7 +114,7 @@ public class RedisUtil {
     }
 
     /**
-     * 将当前数据库的 key 移动到给定的数据库 db 当中
+     * Move key from the current database to the given database
      *
      * @param key
      * @param dbIndex
@@ -125,7 +125,7 @@ public class RedisUtil {
     }
 
     /**
-     * 移除 key 的过期时间，key 将持久保持
+     * Remove the expiration of key so it persists
      *
      * @param key
      * @return
@@ -135,7 +135,7 @@ public class RedisUtil {
     }
 
     /**
-     * 返回 key 的剩余的过期时间
+     * Return the remaining time to live of the key
      *
      * @param key
      * @param unit
@@ -146,7 +146,7 @@ public class RedisUtil {
     }
 
     /**
-     * 返回 key 的剩余的过期时间
+     * Return the remaining time to live of the key
      *
      * @param key
      * @return
@@ -156,7 +156,7 @@ public class RedisUtil {
     }
 
     /**
-     * 从当前数据库中随机返回一个 key
+     * Return a random key from the current database
      *
      * @return
      */
@@ -165,7 +165,7 @@ public class RedisUtil {
     }
 
     /**
-     * 修改 key 的名称
+     * Rename the key
      *
      * @param oldKey
      * @param newKey
@@ -175,7 +175,7 @@ public class RedisUtil {
     }
 
     /**
-     * 仅当 newkey 不存在时，将 oldKey 改名为 newkey
+     * Rename oldKey to newkey only if newkey does not exist
      *
      * @param oldKey
      * @param newKey
@@ -186,7 +186,7 @@ public class RedisUtil {
     }
 
     /**
-     * 返回 key 所储存的值的类型
+     * Return the type of the value stored at key
      *
      * @param key
      * @return
@@ -195,10 +195,10 @@ public class RedisUtil {
         return redisTemplate.type(key);
     }
 
-    /** -------------------string相关操作--------------------- */
+    /** -------------------string operations--------------------- */
 
     /**
-     * 设置指定 key 的值
+     * Set the value of the given key
      * @param key
      * @param value
      */
@@ -207,7 +207,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取指定 key 的值
+     * Get the value of the given key
      * @param key
      * @return
      */
@@ -216,7 +216,7 @@ public class RedisUtil {
     }
 
     /**
-     * 返回 key 中字符串值的子字符
+     * Return a substring of the string stored at key
      * @param key
      * @param start
      * @param end
@@ -227,7 +227,7 @@ public class RedisUtil {
     }
 
     /**
-     * 将给定 key 的值设为 value ，并返回 key 的旧值(old value)
+     * Set key to value and return its old value
      *
      * @param key
      * @param value
@@ -238,7 +238,7 @@ public class RedisUtil {
     }
 
     /**
-     * 对 key 所储存的字符串值，获取指定偏移量上的位(bit)
+     * Get the bit at offset of the string stored at key
      *
      * @param key
      * @param offset
@@ -249,7 +249,7 @@ public class RedisUtil {
     }
 
     /**
-     * 批量获取
+     * Get multiple values
      *
      * @param keys
      * @return
@@ -259,13 +259,13 @@ public class RedisUtil {
     }
 
     /**
-     * 设置ASCII码, 字符串'a'的ASCII码是97, 转为二进制是'01100001', 此方法是将二进制第offset位值变为value
+     * Set a bit: the ASCII code of 'a' is 97, binary '01100001'; this sets the bit at offset to value
      *
      * @param key
      * @param postion
-     *            位置
+     *            position
      * @param value
-     *            值,true为1, false为0
+     *            value, true is 1, false is 0
      * @return
      */
     public boolean setBit(String key, long offset, boolean value) {
@@ -273,45 +273,45 @@ public class RedisUtil {
     }
 
     /**
-     * 将值 value 关联到 key ，并将 key 的过期时间设为 timeout
+     * Set key to value with an expiration of timeout
      *
      * @param key
      * @param value
      * @param timeout
-     *            过期时间
+     *            expiration time
      * @param unit
-     *            时间单位, 天:TimeUnit.DAYS 小时:TimeUnit.HOURS 分钟:TimeUnit.MINUTES
-     *            秒:TimeUnit.SECONDS 毫秒:TimeUnit.MILLISECONDS
+     *            time unit, days: TimeUnit.DAYS, hours: TimeUnit.HOURS, minutes: TimeUnit.MINUTES
+     *            seconds: TimeUnit.SECONDS, milliseconds: TimeUnit.MILLISECONDS
      */
     public void setEx(String key, String value, long timeout, TimeUnit unit) {
         redisTemplate.opsForValue().set(key, value, timeout, unit);
     }
 
     /**
-     * 只有在 key 不存在时设置 key 的值
+     * Set the value only if key does not exist
      *
      * @param key
      * @param value
-     * @return 之前已经存在返回false,不存在返回true
+     * @return false if it already existed, true otherwise
      */
     public boolean setIfAbsent(String key, String value) {
         return redisTemplate.opsForValue().setIfAbsent(key, value);
     }
 
     /**
-     * 用 value 参数覆写给定 key 所储存的字符串值，从偏移量 offset 开始
+     * Overwrite part of the string stored at key with value, starting at offset
      *
      * @param key
      * @param value
      * @param offset
-     *            从指定位置开始覆写
+     *            overwrite starting at this position
      */
     public void setRange(String key, String value, long offset) {
         redisTemplate.opsForValue().set(key, value, offset);
     }
 
     /**
-     * 获取字符串的长度
+     * Get the length of the string
      *
      * @param key
      * @return
@@ -321,7 +321,7 @@ public class RedisUtil {
     }
 
     /**
-     * 批量添加
+     * Add multiple
      *
      * @param maps
      */
@@ -330,17 +330,17 @@ public class RedisUtil {
     }
 
     /**
-     * 同时设置一个或多个 key-value 对，当且仅当所有给定 key 都不存在
+     * Set several key-value pairs only if none of the keys exist
      *
      * @param maps
-     * @return 之前已经存在返回false,不存在返回true
+     * @return false if it already existed, true otherwise
      */
     public boolean multiSetIfAbsent(Map<String, String> maps) {
         return redisTemplate.opsForValue().multiSetIfAbsent(maps);
     }
 
     /**
-     * 增加(自增长), 负数则为自减
+     * Increment; a negative value decrements
      *
      * @param key
      * @param value
@@ -361,7 +361,7 @@ public class RedisUtil {
     }
 
     /**
-     * 追加到末尾
+     * Append to the end
      *
      * @param key
      * @param value
@@ -371,10 +371,10 @@ public class RedisUtil {
         return redisTemplate.opsForValue().append(key, value);
     }
 
-    /** -------------------hash相关操作------------------------- */
+    /** -------------------hash operations------------------------- */
 
     /**
-     * 获取存储在哈希表中指定字段的值
+     * Get the value of a field stored in the hash
      *
      * @param key
      * @param field
@@ -385,7 +385,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取所有给定字段的值
+     * Get the values of all given fields
      *
      * @param key
      * @return
@@ -395,7 +395,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取所有给定字段的值
+     * Get the values of all given fields
      *
      * @param key
      * @param fields
@@ -414,7 +414,7 @@ public class RedisUtil {
     }
 
     /**
-     * 仅当hashKey不存在时才设置
+     * Set only if hashKey does not exist
      *
      * @param key
      * @param hashKey
@@ -426,7 +426,7 @@ public class RedisUtil {
     }
 
     /**
-     * 删除一个或多个哈希表字段
+     * Delete one or more hash fields
      *
      * @param key
      * @param fields
@@ -437,7 +437,7 @@ public class RedisUtil {
     }
 
     /**
-     * 查看哈希表 key 中，指定的字段是否存在
+     * Check whether the given field exists in the hash
      *
      * @param key
      * @param field
@@ -448,7 +448,7 @@ public class RedisUtil {
     }
 
     /**
-     * 为哈希表 key 中的指定字段的整数值加上增量 increment
+     * Increment the integer value of a hash field by increment
      *
      * @param key
      * @param field
@@ -460,7 +460,7 @@ public class RedisUtil {
     }
 
     /**
-     * 为哈希表 key 中的指定字段的整数值加上增量 increment
+     * Increment the integer value of a hash field by increment
      *
      * @param key
      * @param field
@@ -472,7 +472,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取所有哈希表中的字段
+     * Get all fields of the hash
      *
      * @param key
      * @return
@@ -482,7 +482,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取哈希表中字段的数量
+     * Get the number of fields in the hash
      *
      * @param key
      * @return
@@ -492,7 +492,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取哈希表中所有值
+     * Get all values of the hash
      *
      * @param key
      * @return
@@ -502,7 +502,7 @@ public class RedisUtil {
     }
 
     /**
-     * 迭代哈希表中的键值对
+     * Iterate over the key-value pairs of a hash
      *
      * @param key
      * @param options
@@ -512,10 +512,10 @@ public class RedisUtil {
         return redisTemplate.opsForHash().scan(key, options);
     }
 
-    /** ------------------------list相关操作---------------------------- */
+    /** ------------------------list operations---------------------------- */
 
     /**
-     * 通过索引获取列表中的元素
+     * Get a list element by index
      *
      * @param key
      * @param index
@@ -526,13 +526,13 @@ public class RedisUtil {
     }
 
     /**
-     * 获取列表指定范围内的元素
+     * Get list elements in the given range
      *
      * @param key
      * @param start
-     *            开始位置, 0是开始位置
+     *            start position, 0 is the first
      * @param end
-     *            结束位置, -1返回所有
+     *            end position, -1 returns all
      * @return
      */
     public List<String> lRange(String key, long start, long end) {
@@ -540,7 +540,7 @@ public class RedisUtil {
     }
 
     /**
-     * 存储在list头部
+     * Push onto the head of the list
      *
      * @param key
      * @param value
@@ -571,7 +571,7 @@ public class RedisUtil {
     }
 
     /**
-     * 当list存在的时候才加入
+     * Push only if the list exists
      *
      * @param key
      * @param value
@@ -582,7 +582,7 @@ public class RedisUtil {
     }
 
     /**
-     * 如果pivot存在,再pivot前面添加
+     * Insert before pivot if pivot exists
      *
      * @param key
      * @param pivot
@@ -624,7 +624,7 @@ public class RedisUtil {
     }
 
     /**
-     * 为已存在的列表添加值
+     * Push a value onto an existing list
      *
      * @param key
      * @param value
@@ -635,7 +635,7 @@ public class RedisUtil {
     }
 
     /**
-     * 在pivot元素的右边添加值
+     * Insert the value after the pivot element
      *
      * @param key
      * @param pivot
@@ -647,11 +647,11 @@ public class RedisUtil {
     }
 
     /**
-     * 通过索引设置列表元素的值
+     * Set the value of a list element by index
      *
      * @param key
      * @param index
-     *            位置
+     *            position
      * @param value
      */
     public void lSet(String key, long index, String value) {
@@ -659,23 +659,23 @@ public class RedisUtil {
     }
 
     /**
-     * 移出并获取列表的第一个元素
+     * Remove and get the first element of the list
      *
      * @param key
-     * @return 删除的元素
+     * @return members to remove
      */
     public String lLeftPop(String key) {
         return redisTemplate.opsForList().leftPop(key);
     }
 
     /**
-     * 移出并获取列表的第一个元素， 如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止
+     * Remove and get the first element of the list, blocking until timeout or until an element is available
      *
      * @param key
      * @param timeout
-     *            等待时间
+     *            wait time
      * @param unit
-     *            时间单位
+     *            time unit
      * @return
      */
     public String lBLeftPop(String key, long timeout, TimeUnit unit) {
@@ -683,23 +683,23 @@ public class RedisUtil {
     }
 
     /**
-     * 移除并获取列表最后一个元素
+     * Remove and get the last element of the list
      *
      * @param key
-     * @return 删除的元素
+     * @return members to remove
      */
     public String lRightPop(String key) {
         return redisTemplate.opsForList().rightPop(key);
     }
 
     /**
-     * 移出并获取列表的最后一个元素， 如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止
+     * Remove and get the last element of the list, blocking until timeout or until an element is available
      *
      * @param key
      * @param timeout
-     *            等待时间
+     *            wait time
      * @param unit
-     *            时间单位
+     *            time unit
      * @return
      */
     public String lBRightPop(String key, long timeout, TimeUnit unit) {
@@ -707,7 +707,7 @@ public class RedisUtil {
     }
 
     /**
-     * 移除列表的最后一个元素，并将该元素添加到另一个列表并返回
+     * Remove the last element of the list, push it onto another list and return it
      *
      * @param sourceKey
      * @param destinationKey
@@ -719,7 +719,7 @@ public class RedisUtil {
     }
 
     /**
-     * 从列表中弹出一个值，将弹出的元素插入到另外一个列表中并返回它； 如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止
+     * Pop a value from the list, push it onto another list and return it, blocking until timeout or until an element is available
      *
      * @param sourceKey
      * @param destinationKey
@@ -734,12 +734,12 @@ public class RedisUtil {
     }
 
     /**
-     * 删除集合中值等于value得元素
+     * Remove members equal to value
      *
      * @param key
      * @param index
-     *            index=0, 删除所有值等于value的元素; index>0, 从头部开始删除第一个值等于value的元素;
-     *            index<0, 从尾部开始删除第一个值等于value的元素;
+     *            index=0, remove all elements equal to value; index>0 removes the first such element from the head;
+     *            index<0, removes the first such element from the tail;
      * @param value
      * @return
      */
@@ -748,7 +748,7 @@ public class RedisUtil {
     }
 
     /**
-     * 裁剪list
+     * Trim the list
      *
      * @param key
      * @param start
@@ -759,7 +759,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取列表长度
+     * Get the list length
      *
      * @param key
      * @return
@@ -768,10 +768,10 @@ public class RedisUtil {
         return redisTemplate.opsForList().size(key);
     }
 
-    /** --------------------set相关操作-------------------------- */
+    /** --------------------set operations-------------------------- */
 
     /**
-     * set添加元素
+     * Add members to the set
      *
      * @param key
      * @param values
@@ -782,7 +782,7 @@ public class RedisUtil {
     }
 
     /**
-     * set移除元素
+     * Remove members from the set
      *
      * @param key
      * @param values
@@ -793,7 +793,7 @@ public class RedisUtil {
     }
 
     /**
-     * 移除并返回集合的一个随机元素
+     * Remove and return a random member of the set
      *
      * @param key
      * @return
@@ -803,7 +803,7 @@ public class RedisUtil {
     }
 
     /**
-     * 将元素value从一个集合移到另一个集合
+     * Move member value from one set to another
      *
      * @param key
      * @param value
@@ -815,7 +815,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取集合的大小
+     * Get the size of the sorted set
      *
      * @param key
      * @return
@@ -825,7 +825,7 @@ public class RedisUtil {
     }
 
     /**
-     * 判断集合是否包含value
+     * Whether the set contains value
      *
      * @param key
      * @param value
@@ -836,7 +836,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取两个集合的交集
+     * Get the intersection of two sets
      *
      * @param key
      * @param otherKey
@@ -847,7 +847,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取key集合与多个集合的交集
+     * Get the intersection of the key set and several sets
      *
      * @param key
      * @param otherKeys
@@ -858,7 +858,7 @@ public class RedisUtil {
     }
 
     /**
-     * key集合与otherKey集合的交集存储到destKey集合中
+     * Store the intersection of key and otherKey in destKey
      *
      * @param key
      * @param otherKey
@@ -871,7 +871,7 @@ public class RedisUtil {
     }
 
     /**
-     * key集合与多个集合的交集存储到destKey集合中
+     * Store the intersection of the key set and several sets in destKey
      *
      * @param key
      * @param otherKeys
@@ -885,7 +885,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取两个集合的并集
+     * Get the union of two sets
      *
      * @param key
      * @param otherKeys
@@ -896,7 +896,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取key集合与多个集合的并集
+     * Get the union of the key set and several sets
      *
      * @param key
      * @param otherKeys
@@ -907,7 +907,7 @@ public class RedisUtil {
     }
 
     /**
-     * key集合与otherKey集合的并集存储到destKey中
+     * Store the union of key and otherKey in destKey
      *
      * @param key
      * @param otherKey
@@ -919,7 +919,7 @@ public class RedisUtil {
     }
 
     /**
-     * key集合与多个集合的并集存储到destKey中
+     * Store the union of the key set and several sets in destKey
      *
      * @param key
      * @param otherKeys
@@ -932,7 +932,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取两个集合的差集
+     * Get the difference of two sets
      *
      * @param key
      * @param otherKey
@@ -943,7 +943,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取key集合与多个集合的差集
+     * Get the difference of the key set and several sets
      *
      * @param key
      * @param otherKeys
@@ -954,7 +954,7 @@ public class RedisUtil {
     }
 
     /**
-     * key集合与otherKey集合的差集存储到destKey中
+     * Store the difference of key and otherKey in destKey
      *
      * @param key
      * @param otherKey
@@ -967,7 +967,7 @@ public class RedisUtil {
     }
 
     /**
-     * key集合与多个集合的差集存储到destKey中
+     * Store the difference of the key set and several sets in destKey
      *
      * @param key
      * @param otherKeys
@@ -981,7 +981,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取集合所有元素
+     * Get all members of the set
      *
      * @param key
      * @param otherKeys
@@ -993,7 +993,7 @@ public class RedisUtil {
     }
 
     /**
-     * 随机获取集合中的一个元素
+     * Get a random member of the set
      *
      * @param key
      * @return
@@ -1003,7 +1003,7 @@ public class RedisUtil {
     }
 
     /**
-     * 随机获取集合中count个元素
+     * Get count random members of the set
      *
      * @param key
      * @param count
@@ -1014,7 +1014,7 @@ public class RedisUtil {
     }
 
     /**
-     * 随机获取集合中count个元素并且去除重复的
+     * Get count distinct random members of the set
      *
      * @param key
      * @param count
@@ -1034,10 +1034,10 @@ public class RedisUtil {
         return redisTemplate.opsForSet().scan(key, options);
     }
 
-    /**------------------zSet相关操作--------------------------------*/
+    /**------------------zSet operations--------------------------------*/
 
     /**
-     * 添加元素,有序集合是按照元素的score值由小到大排列
+     * Add a member; the sorted set is ordered by score from low to high
      *
      * @param key
      * @param value
@@ -1069,7 +1069,7 @@ public class RedisUtil {
     }
 
     /**
-     * 增加元素的score值，并返回增加后的值
+     * Increment the score of a member and return the new score
      *
      * @param key
      * @param value
@@ -1081,18 +1081,18 @@ public class RedisUtil {
     }
 
     /**
-     * 返回元素在集合的排名,有序集合是按照元素的score值由小到大排列
+     * Return the rank of the member, with scores ordered from low to high
      *
      * @param key
      * @param value
-     * @return 0表示第一位
+     * @return 0 is the first bit
      */
     public Long zRank(String key, Object value) {
         return redisTemplate.opsForZSet().rank(key, value);
     }
 
     /**
-     * 返回元素在集合的排名,按元素的score值由大到小排列
+     * Return the rank of the member, with scores ordered from high to low
      *
      * @param key
      * @param value
@@ -1103,13 +1103,13 @@ public class RedisUtil {
     }
 
     /**
-     * 获取集合的元素, 从小到大排序
+     * Get set members, sorted from low to high
      *
      * @param key
      * @param start
-     *            开始位置
+     *            start position
      * @param end
-     *            结束位置, -1查询所有
+     *            end position, -1 queries all
      * @return
      */
     public Set<String> zRange(String key, long start, long end) {
@@ -1117,7 +1117,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取集合元素, 并且把score值也获取
+     * Get set members together with their scores
      *
      * @param key
      * @param start
@@ -1130,13 +1130,13 @@ public class RedisUtil {
     }
 
     /**
-     * 根据Score值查询集合元素
+     * Query set members by score
      *
      * @param key
      * @param min
-     *            最小值
+     *            minimum value
      * @param max
-     *            最大值
+     *            maximum value
      * @return
      */
     public Set<String> zRangeByScore(String key, double min, double max) {
@@ -1144,13 +1144,13 @@ public class RedisUtil {
     }
 
     /**
-     * 根据Score值查询集合元素, 从小到大排序
+     * Query set members by score, sorted from low to high
      *
      * @param key
      * @param min
-     *            最小值
+     *            minimum value
      * @param max
-     *            最大值
+     *            maximum value
      * @return
      */
     public Set<TypedTuple<String>> zRangeByScoreWithScores(String key,
@@ -1174,7 +1174,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取集合的元素, 从大到小排序
+     * Get set members, sorted from high to low
      *
      * @param key
      * @param start
@@ -1186,7 +1186,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取集合的元素, 从大到小排序, 并返回score值
+     * Get set members sorted from high to low, with scores
      *
      * @param key
      * @param start
@@ -1200,7 +1200,7 @@ public class RedisUtil {
     }
 
     /**
-     * 根据Score值查询集合元素, 从大到小排序
+     * Query set members by score, sorted from high to low
      *
      * @param key
      * @param min
@@ -1213,7 +1213,7 @@ public class RedisUtil {
     }
 
     /**
-     * 根据Score值查询集合元素, 从大到小排序
+     * Query set members by score, sorted from high to low
      *
      * @param key
      * @param min
@@ -1242,7 +1242,7 @@ public class RedisUtil {
     }
 
     /**
-     * 根据score值获取集合元素数量
+     * Count set members by score
      *
      * @param key
      * @param min
@@ -1254,7 +1254,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取集合大小
+     * Get the set size
      *
      * @param key
      * @return
@@ -1264,7 +1264,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取集合大小
+     * Get the set size
      *
      * @param key
      * @return
@@ -1274,7 +1274,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取集合中value元素的score值
+     * Get the score of the member value
      *
      * @param key
      * @param value
@@ -1285,7 +1285,7 @@ public class RedisUtil {
     }
 
     /**
-     * 移除指定索引位置的成员
+     * Remove members in the given index range
      *
      * @param key
      * @param start
@@ -1297,7 +1297,7 @@ public class RedisUtil {
     }
 
     /**
-     * 根据指定的score值的范围来移除成员
+     * Remove members within the given score range
      *
      * @param key
      * @param min
@@ -1309,7 +1309,7 @@ public class RedisUtil {
     }
 
     /**
-     * 获取key和otherKey的并集并存储在destKey中
+     * Store the union of key and otherKey in destKey
      *
      * @param key
      * @param otherKey
@@ -1334,7 +1334,7 @@ public class RedisUtil {
     }
 
     /**
-     * 交集
+     * intersection
      *
      * @param key
      * @param otherKey
@@ -1348,7 +1348,7 @@ public class RedisUtil {
     }
 
     /**
-     * 交集
+     * intersection
      *
      * @param key
      * @param otherKeys

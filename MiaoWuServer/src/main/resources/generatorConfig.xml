@@ -2,7 +2,7 @@
 <!DOCTYPE generatorConfiguration
   PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
   "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
-<!-- mybatis-generator的核心配置文件 -->
+<!-- Main mybatis-generator configuration -->
 <generatorConfiguration>
 
   <classPathEntry location="F:\mvn_repo\mysql\mysql-connector-java\5.1.38\mysql-connector-java-5.1.38.jar" />
@@ -20,29 +20,29 @@
         connectionURL="jdbc:mysql://127.0.0.1:3306/miaowu"
         userId="lzy"
         password="changeme">
-      <!--产生selectByPrimaryKey-->
+      <!--generate selectByPrimaryKey-->
       <property name="useInformationSchema" value="true" />
     </jdbcConnection>
 
 
-	<!--指定生成的类型为java类型，避免数据库中number等类型字段 -->
+	<!--map columns to Java types, avoiding raw number types from the database -->
     <javaTypeResolver >
       <property name="forceBigDecimals" value="false" />
 <!--      <property name="useJSR310Types" value="true" />-->
     </javaTypeResolver>
 
-	<!--自动生成的实体的存放包路径 -->
+	<!--package for the generated entities -->
     <javaModelGenerator targetPackage="com.apps.miaowu.bean" targetProject="./src/main/java">
       <property name="enableSubPackages" value="true" />
       <property name="trimStrings" value="true" />
     </javaModelGenerator>
 
-	<!--自动生成的*Mapper.xml文件存放路径 -->
+	<!--location of the generated *Mapper.xml files -->
     <sqlMapGenerator targetPackage="mapper"  targetProject="./src/main/resources">
       <property name="enableSubPackages" value="true" />
     </sqlMapGenerator>
 
-	<!--自动生成的*Mapper.java存放路径 -->
+	<!--location of the generated *Mapper.java files -->
     <javaClientGenerator type="XMLMAPPER" targetPackage="com.apps.miaowu.dao"  targetProject="./src/main/java">
       <property name="enableSubPackages" value="true" />
     </javaClientGenerator>
@@ -50,7 +50,7 @@
 
 
 
-	<!-- 映射配置 -->
+	<!-- table mappings -->
 
     <table tableName="animal" domainObjectName="Animal" >
     </table>

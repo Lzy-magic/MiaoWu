@@ -13,8 +13,8 @@ public interface ImgService {
     /**
      *  add img
      *
-     * @param request http请求
-     * @param file 图片文件
+     * @param request HTTP request
+     * @param file image file
      * @return APIResult
      */
     APIResult addImg(HttpServletRequest request, MultipartFile file);
@@ -22,7 +22,7 @@ public interface ImgService {
     /**
      * del img
      *
-     * @param url 图片url
+     * @param url image URL
      * @return APIResult
      */
     APIResult delImg(String url);

@@ -9,15 +9,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Web - 日期编辑器
+ * Web - date editor
  * @see org.springframework.beans.propertyeditors.CustomDateEditor
  */
 public class DateEditor extends PropertyEditorSupport {
-    /** 是否将空字符串转换为null */
+    /** Whether to convert empty strings to null */
     private final boolean emptyAsNull;
-    /** 日期格式数组 */
+    /** Supported date formats */
     private final String[] datePatterns;
-    /** 日期编制器 */
+    /** Date editor */
     private final DateFormat dateFormater;
 
     public DateEditor() {

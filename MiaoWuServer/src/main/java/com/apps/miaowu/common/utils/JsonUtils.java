@@ -10,7 +10,7 @@ public class JsonUtils {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
     
-    //对象转字符串
+    // Object to JSON string
     public static <T> String obj2String(T obj){
         if (obj == null){
             return null;
@@ -23,7 +23,7 @@ public class JsonUtils {
         }
     }
     
-    //字符串转对象
+    // JSON string to object
     @SuppressWarnings("unchecked")
     public static <T> T string2Obj(String str,Class<T> clazz){
         if (StringUtils.isEmpty(str) || clazz == null){

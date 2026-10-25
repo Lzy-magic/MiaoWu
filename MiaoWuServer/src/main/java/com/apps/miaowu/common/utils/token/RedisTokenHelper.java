@@ -19,7 +19,7 @@ public class RedisTokenHelper implements TokenHelper {
         if(token != null || token.length() != 0){
             String userId = redisUtil.get(token);
             if(userId != null){
-                //已使用TimeUnit，未测试
+                // uses TimeUnit, untested
                 redisUtil.expire(token, RedisUtil.TOKEN_EXPIRES_SECOND, TimeUnit.SECONDS);
                 return true;
             }

@@ -3,28 +3,28 @@ package com.apps.miaowu.common.utils.token;
 public interface TokenHelper {
       
     /**
-     * 根据用户id生成token
+     * Create a token for the user id
      * @param id
      * @return
      */
     TokenModel create(String id);
     
     /**
-     * 检查是否存在该token
+     * Check whether the token exists
      * @param token
      * @return
      */
     boolean check(String token);
     
     /**
-     * 从前端返回的校验字符串中获取token
+     * Extract the token from the auth string sent by the frontend
      * @param authStr
      * @return
      */
     TokenModel get(String authStr);
     
     /**
-     * 根据用户id删除token
+     * Delete the token of the user id
      * @param mode
      * @return
      */

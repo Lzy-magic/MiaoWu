@@ -14,6 +14,6 @@ public class Consumer {
     @RabbitHandler
     @RabbitListener(queuesToDeclare = @Queue("rabbitmq_queue"))
     public void process(String message) {
-        System.out.println("消费者消费信息====" + message);
+        System.out.println("Consumer received message====" + message);
     }
 }

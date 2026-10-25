@@ -1,13 +1,13 @@
-# 共有8个级别，按照从低到高为：ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF。
+# There are 8 levels, from low to high: ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF。
 
 Configuration:
   status: warn
   monitorInterval: 30
 
-  Properties: # 定义全局变量
-    Property: # 缺省配置（用于开发环境）。其他环境需要在VM参数中指定，如下：
-      #测试：-Dlog.level.console=warn -Dlog.level.xjj=trace
-      #生产：-Dlog.level.console=warn -Dlog.level.xjj=info
+  Properties: # Global variables
+    Property: # Defaults (development). Other environments set them via VM options, e.g.:
+      # test: -Dlog.level.console=warn -Dlog.level.xjj=trace
+      # production: -Dlog.level.console=warn -Dlog.level.xjj=info
       - name: log.level.console
         value: info
       - name: log.path
@@ -18,12 +18,12 @@ Configuration:
         value: "%d{yyyy-MM-dd HH:mm:ss.SSS} -%5p ${PID:-} [%15.15t] %-30.30C{1.} : %m%n"
 
   Appenders:
-    Console:  #输出到控制台
+    Console:  # Console output
       name: CONSOLE
       target: SYSTEM_OUT
       PatternLayout:
         pattern: ${log.pattern}
-    #   启动日志
+    #   Startup log
     RollingFile:
       - name: ROLLING_FILE
         fileName: ${log.path}/${project.name}.log
@@ -31,7 +31,7 @@ Configuration:
         PatternLayout:
           pattern: ${log.pattern}
         Filters:
-          #        一定要先去除不接受的日志级别，然后获取需要接受的日志级别
+          #        Deny the unwanted levels first, then accept the wanted ones
           ThresholdFilter:
             - level: error
               onMatch: DENY
@@ -40,12 +40,12 @@ Configuration:
               onMatch: ACCEPT
               onMismatch: DENY
         Policies:
-          TimeBasedTriggeringPolicy:  # 按天分类
+          TimeBasedTriggeringPolicy:  # roll over daily
             modulate: true
             interval: 1
-        DefaultRolloverStrategy:     # 文件最多100个
+        DefaultRolloverStrategy:     # keep at most 100 files
           max: 100
-      #   平台日志
+      #   Platform log
       - name: PLATFORM_ROLLING_FILE
         ignoreExceptions: false
         fileName: ${log.path}/platform/${project.name}_platform.log
@@ -53,12 +53,12 @@ Configuration:
         PatternLayout:
           pattern: ${log.pattern}
         Policies:
-          TimeBasedTriggeringPolicy:  # 按天分类
+          TimeBasedTriggeringPolicy:  # roll over daily
             modulate: true
             interval: 1
-        DefaultRolloverStrategy:     # 文件最多100个
+        DefaultRolloverStrategy:     # keep at most 100 files
           max: 100
-      #   业务日志
+      #   Business log
       - name: BUSINESS_ROLLING_FILE
         ignoreExceptions: false
         fileName: ${log.path}/business/${project.name}_business.log
@@ -66,12 +66,12 @@ Configuration:
         PatternLayout:
           pattern: ${log.pattern}
         Policies:
-          TimeBasedTriggeringPolicy:  # 按天分类
+          TimeBasedTriggeringPolicy:  # roll over daily
             modulate: true
             interval: 1
-        DefaultRolloverStrategy:     # 文件最多100个
+        DefaultRolloverStrategy:     # keep at most 100 files
           max: 100
-      #   错误日志
+      #   Error log
       - name: EXCEPTION_ROLLING_FILE
         ignoreExceptions: false
         fileName: ${log.path}/exception/${project.name}_exception.log
@@ -83,12 +83,12 @@ Configuration:
         PatternLayout:
           pattern: ${log.pattern}
         Policies:
-          TimeBasedTriggeringPolicy:  # 按天分类
+          TimeBasedTriggeringPolicy:  # roll over daily
             modulate: true
             interval: 1
-        DefaultRolloverStrategy:     # 文件最多100个
+        DefaultRolloverStrategy:     # keep at most 100 files
           max: 100
-      #   DB 日志
+      #   DB log
       - name: DB_ROLLING_FILE
         ignoreExceptions: false
         fileName: ${log.path}/db/${project.name}_db.log
@@ -96,10 +96,10 @@ Configuration:
         PatternLayout:
           pattern: ${log.pattern}
         Policies:
-          TimeBasedTriggeringPolicy:  # 按天分类
+          TimeBasedTriggeringPolicy:  # roll over daily
             modulate: true
             interval: 1
-        DefaultRolloverStrategy:     # 文件最多100个
+        DefaultRolloverStrategy:     # keep at most 100 files
           max: 100
 
 
@@ -140,8 +140,8 @@ Configuration:
           - ref: DB_ROLLING_FILE
 
 
-#    监听具体包下面的日志
-#    Logger: # 为com.xjj包配置特殊的Log级别，方便调试
+#    Loggers for specific packages
+#    Logger: # Custom log level for the com.xjj package, for debugging
 #      - name: com.xjj
 #        additivity: false
 #        level: ${sys:log.level.xjj}

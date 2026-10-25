@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * @author 梁键兴
+ * @author Liang Jianxing
  */
 public class MiaoWuUtil {
     public static String getDate(){

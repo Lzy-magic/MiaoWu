@@ -20,12 +20,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public APIResult addComment(Long userId, Long articleId, String content) {
-        //默认只要没有身份证号码则没有完善个人信息
+        // A profile without an ID card number counts as incomplete
         //
-        //则不能评论
+        // and cannot comment
         if (userId == null) {
             return APIResult.newResult(ResultCode.BadRequest, "Parameters are missing", null);
-//            return "完善个人信息后才能评论哦~";
+//            return "Please complete your profile before commenting~";
         } else {
             Comment comment = new Comment();
             comment.setCommentContent(content);
