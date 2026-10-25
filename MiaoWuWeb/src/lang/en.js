@@ -184,6 +184,11 @@ export default {
     showImage: 'Click to see the picture',
     dialogTitle: 'Have a look'
   },
+  example: {
+    invalidSourceUrl: 'The external URL is invalid',
+    publishSuccess: 'Article published',
+    titleContentRequired: 'Please fill in the required title and content'
+  },
   imageCropper: {
     hint: 'Click or drag an image here',
     loading: 'Uploading...',

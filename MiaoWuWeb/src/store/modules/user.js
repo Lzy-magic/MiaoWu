@@ -56,7 +56,7 @@ const actions = {
           setToken(data.token)
           resolve(response)
         } else {
-          // 登录失败，ui处理
+          // login failed, handled by the UI
           resolve(response)
         }
       }).catch(error => {

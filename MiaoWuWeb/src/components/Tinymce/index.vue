@@ -148,7 +148,7 @@ export default {
             _this.fullscreen = e.state
           })
         }
-        // 整合七牛上传
+        // Qiniu upload integration
         // images_dataimg_filter(img) {
         //   setTimeout(() => {
         //     const $image = $(img);
@@ -177,7 +177,7 @@ export default {
         //       progress(100);
         //     })
         //   }).catch(err => {
-        //     failure('出现未知问题，刷新页面，或者联系程序员')
+        //     failure('Unknown error, refresh the page or contact the developer')
         //     console.log(err);
         //   });
         // },

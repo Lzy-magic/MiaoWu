@@ -184,6 +184,11 @@ export default {
     showImage: '点我看图',
     dialogTitle: '随便看'
   },
+  example: {
+    invalidSourceUrl: '外链url填写不正确',
+    publishSuccess: '发布文章成功',
+    titleContentRequired: '请填写必要的标题和内容'
+  },
   imageCropper: {
     hint: '点击，或拖动图片至此处',
     loading: '正在上传……',

@@ -1,7 +1,7 @@
 /**
- * database64文件格式转换为2进制
+ * Convert a base64 data URL to binary
  *
- * @param  {[String]} data dataURL 的格式为 “data:image/png;base64,****”,逗号之前都是一些说明性的文字，我们只需要逗号之后的就行了
+ * @param  {[String]} data dataURL in the form "data:image/png;base64,****"; everything before the comma is metadata, only the part after it is needed
  * @param  {[String]} mime [description]
  * @return {[blob]}      [description]
  */
@@ -12,7 +12,7 @@ export default function(data, mime) {
   for (var i = 0; i < data.length; i++) {
     ia[i] = data.charCodeAt(i)
   }
-  // canvas.toDataURL 返回的默认格式就是 image/png
+  // canvas.toDataURL returns image/png by default
   return new Blob([ia], {
     type: mime
   })
