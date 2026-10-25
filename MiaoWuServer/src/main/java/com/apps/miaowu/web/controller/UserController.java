@@ -1,5 +1,6 @@
 package com.apps.miaowu.web.controller;
 
+
 import com.apps.miaowu.annotation.NoneAuth;
 import com.apps.miaowu.bean.User;
 import com.apps.miaowu.bean.result.APIResult;
@@ -45,6 +46,15 @@ public class UserController {
             @ApiImplicitParam(name = "password", value = "", required = true)
     })
     public APIResult addUser(User user) {
+        if (user.getIdCode() == null || user.getIdCode().trim().isEmpty()) {
+            throw new IllegalArgumentException("missing required parameter: idCode");
+        }
+        if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
+            throw new IllegalArgumentException("missing required parameter: phone");
+        }
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("missing required parameter: password");
+        }
         return userService.addUser(user);
     }
 
