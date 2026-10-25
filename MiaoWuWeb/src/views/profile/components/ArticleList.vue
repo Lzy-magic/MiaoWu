@@ -1,7 +1,7 @@
 <template>
   <div class="article-contains">
     <div v-if="JSON.stringify(articles) === '{}'">
-      <span>没有相关文章信息哦~</span>
+      <span>{{ $t('article.noArticles') }}</span>
     </div>
     <div v-for="(article,index) in articles" :key="index" class="articles">
       <div class="post">
@@ -19,13 +19,13 @@
             type="primary"
             style="right: 50px; position: absolute"
             @click="updateArticle(article.id)"
-          >修改文章</el-button>
+          >{{ $t('article.edit') }}</el-button>
           <el-popconfirm
-            confirm-button-text="删除"
-            cancel-button-text="手滑了"
+            :confirm-button-text="$t('article.delete')"
+            :cancel-button-text="$t('common.oops')"
             icon="el-icon-info"
             icon-color="red"
-            title="确定删除文章吗？"
+            :title="$t('article.confirmDelete')"
             @onConfirm="delArticle(article.id)"
           >
             <el-button
@@ -109,13 +109,13 @@ export default {
         if (result.code === ResultCode.SuccessCode) {
           self.$set(article, 'thumbUp', article.thumbUp + 1)
           // article.thumbUp++;
-          this.$message.success('点赞成功喵~')
+          this.$message.success(this.$t('article.likeSuccess'))
         } else if (result.code === ResultCode.CancelSuccessCode) {
           self.$set(article, 'thumbUp', article.thumbUp - 1)
-          this.$message.success('取消点赞成功喵~')
+          this.$message.success(this.$t('article.unlikeSuccess'))
           // article.thumbUp--;
         } else if (result.code === ResultCode.ServerInnerError) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
           this.loading = false
         }
       })
@@ -127,7 +127,7 @@ export default {
       }
       request.request({
         url,
-        // todo 页面未响应
+        // TODO: the page does not respond
         method: 'delete',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -139,9 +139,9 @@ export default {
           return
         }
         if (result.code === ResultCode.SuccessCode) {
-          this.$message.success('删除文章成功喵~')
+          this.$message.success(this.$t('article.deleteSuccess'))
         } else if (result.code === ResultCode.ServerInnerError) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
         }
       })
     },
@@ -149,7 +149,7 @@ export default {
       this.$router.push({ path: '/article/articleDetail', query: { articleId: articleId }})
     },
     updateArticle(id) {
-      // 编辑器中获取文章信息
+      // Load the article info in the editor
       this.$router.push({ path: '/article/editor', query: { articleId: id }})
     }
   }

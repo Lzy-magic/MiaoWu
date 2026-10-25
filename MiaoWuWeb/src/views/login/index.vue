@@ -9,7 +9,7 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">流浪动物救助平台</h3>
+        <h3 class="title">{{ $t('login.title') }}</h3>
       </div>
 
       <el-form-item prop="phone">
@@ -19,7 +19,7 @@
         <el-input
           ref="phone"
           v-model="loginForm.phone"
-          placeholder="电话号码"
+          :placeholder="$t('user.phone')"
           name="phone"
           type="text"
           tabindex="1"
@@ -37,7 +37,7 @@
             ref="password"
             v-model="loginForm.password"
             :type="passwordType"
-            placeholder="密码"
+            :placeholder="$t('user.password')"
             name="password"
             tabindex="2"
             autocomplete="on"
@@ -56,17 +56,17 @@
         type="primary"
         style="width:100%;margin-bottom:30px;"
         @click.native.prevent="handleLogin"
-      >登录</el-button>
+      >{{ $t('login.logIn') }}</el-button>
       <el-button
         type="primary"
         style="width:100%;margin-bottom:30px; margin-left:0px;"
         @click="toRegister"
-      >注册</el-button>
+      >{{ $t('user.register') }}</el-button>
       <!-- <el-button
               type="primary"
               style="width:100%;margin-bottom:30px; margin-left:0px;"
               @click="touristLogin"
-      >随便看看</el-button> -->
+      >{{ $t('login.browse') }}</el-button> -->
 
     </el-form>
 
@@ -171,7 +171,7 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (settings.isDebug) {
           this.loading = false
-          this.$message.info('开发者模式')
+          this.$message.info(this.$t('login.devMode'))
           this.$router.push({ path: this.redirect || '/' })
           // this.userInfo = {};
           return
@@ -185,15 +185,15 @@ export default {
               }
               if (result.code === ResultCode.SuccessCode) {
                 this.$router.push({ path: this.redirect || '/' })
-                this.$message.success('登录成功啦喵~')
+                this.$message.success(this.$t('login.success'))
                 // let token = JSON.parse(result.data).token;
                 // window.localStorage.setItem("token", token);
               } else if (result.code === ResultCode.BadRequest) {
-                this.$message.error('账号或密码错误~')
+                this.$message.error(this.$t('login.wrongCredentials'))
               } else if (result.code === ResultCode.ServerInnerError) {
-                this.$message.error('服务器出错啦~')
+                this.$message.error(this.$t('login.serverError'))
               } else {
-                this.$message.error('账号或密码不能为空~')
+                this.$message.error(this.$t('login.empty'))
               }
               this.loading = false
             })
@@ -227,7 +227,7 @@ export default {
 </script>
 
 <style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
+/* Fix the mismatched input background and caret color */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
 $bg: #283443;

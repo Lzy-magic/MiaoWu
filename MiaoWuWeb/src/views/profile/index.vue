@@ -10,22 +10,22 @@
         <el-col :span="18" :xs="24">
           <el-card>
             <el-tabs v-model="activeTab">
-              <el-tab-pane label="我的信息" name="userInfo">
+              <el-tab-pane :label="$t('profile.myInfo')" name="userInfo">
                 <userInfo :user-info="this.$store.state.userInfo" />
               </el-tab-pane>
-              <el-tab-pane label="收藏文章列表" name="clipArticles">
+              <el-tab-pane :label="$t('profile.clipArticles')" name="clipArticles">
                 <ArticleList :articles="clipArticles" />
               </el-tab-pane>
-              <el-tab-pane label="我发布的文章" name="myArticles">
+              <el-tab-pane :label="$t('profile.myArticles')" name="myArticles">
                 <ArticleList :articles="myArticles" />
               </el-tab-pane>
-              <el-tab-pane label="我关注的人的动态" name="followArticles">
+              <el-tab-pane :label="$t('profile.followArticles')" name="followArticles">
                 <ArticleList :articles="followArticles" />
               </el-tab-pane>
-              <el-tab-pane label="我关注的人" name="follows">
+              <el-tab-pane :label="$t('profile.follows')" name="follows">
                 <UserList :follows="follows" />
               </el-tab-pane>
-              <el-tab-pane label="我的粉丝" name="fans">
+              <el-tab-pane :label="$t('profile.fans')" name="fans">
                 <UserList :fans="fans" />
               </el-tab-pane>
             </el-tabs>
@@ -91,8 +91,8 @@ export default {
       if (settings.isDebug) {
         this.$store.state.clipArticles = {
           0: {
-            title: '英短',
-            content: '求收养'
+            title: 'British Shorthair',
+            content: 'Looking for a home'
           }
         }
         return
@@ -114,7 +114,7 @@ export default {
         if (result.code === ResultCode.SuccessCode) {
           self.clipArticles = result.data
         } else if (result.code === ResultCode.ServerInnerError) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
           this.loading = false
         }
       })
@@ -137,7 +137,7 @@ export default {
         if (result.code === ResultCode.SuccessCode) {
           self.myArticles = result.data
         } else if (result.code === ResultCode.ServerInnerError) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
           this.loading = false
         }
       })
@@ -160,7 +160,7 @@ export default {
         if (result.code === ResultCode.SuccessCode) {
           self.followArticles = result.data
         } else if (result.code === ResultCode.ServerInnerError) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
           this.loading = false
         }
       })

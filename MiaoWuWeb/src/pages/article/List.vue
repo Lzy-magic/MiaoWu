@@ -1,8 +1,8 @@
 <template>
   <el-row>
     <el-col>
-      <el-input v-model="input" placeholder="搜索" style="width:300px" />
-      <el-button type="primary" icon="el-icon-search" @click="search(input)">搜索</el-button>
+      <el-input v-model="input" :placeholder="$t('common.search')" style="width:300px" />
+      <el-button type="primary" icon="el-icon-search" @click="search(input)">{{ $t('common.search') }}</el-button>
     </el-col>
     <el-col v-for="(article, index) in articles" :key="index" :span="8" :offset="2">
       <el-card :body-style="{ padding: '0px' }" style="">
@@ -46,7 +46,7 @@ export default {
       request.get(settings.apiUrl + 'articles/with=clips&userId=' + this.$store.getters.id).then((result) => {
         this.articles = result.data
       })
-    } else { // 游客
+    } else { // guest
       request.get(settings.apiUrl + 'articles/findAll').then(result => {
         this.articles = result.data
       })
@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     toPublishArticle() {
-      // 跳转到编辑页面
+      // Go to the editor page
       this.$router.push({ path: '/article/editor' })
     },
     loadAll() {
@@ -88,7 +88,7 @@ export default {
         const self = this
         const url = settings.apiUrl + 'clips'
         if (!self.$store.state.user) {
-          self.$message.error('尚未登录')
+          self.$message.error(self.$t('article.notLoggedIn'))
         }
         const form = {
           'userId': self.$store.getters.id,
@@ -104,12 +104,12 @@ export default {
           data: qs.stringify(form)
         }).then((result, error) => {
           if (error) {
-            this.$message.error('服务器出错喵~')
+            this.$message.error(this.$t('common.serverError'))
           } else if (result.code === ResultCode.SuccessCode) {
             article.clip = {}
-            this.$message.success('收藏文章成功喵~')
+            this.$message.success(this.$t('article.clipSuccess'))
           } else if (result.code === ResultCode.ServerInnerError) {
-            this.$message.error('服务器出错喵~')
+            this.$message.error(this.$t('common.serverError'))
           }
         })
       } else {
@@ -130,12 +130,12 @@ export default {
           data: qs.stringify(form)
         }).then((result, error) => {
           if (error) {
-            this.$message.error('服务器出错喵~')
+            this.$message.error(this.$t('common.serverError'))
           } else if (result.code === ResultCode.SuccessCode) {
             this.$set(article, 'clip', null)
-            this.$message.success('删除收藏成功喵~')
+            this.$message.success(this.$t('article.unclipSuccess'))
           } else if (result.code === ResultCode.ServerInnerError) {
-            this.$message.error('服务器出错喵~')
+            this.$message.error(this.$t('common.serverError'))
           }
         })
       }
@@ -151,11 +151,11 @@ export default {
         }
       }).then((result, error) => {
         if (error) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
         } else if (result.code === ResultCode.SuccessCode) {
-          this.$message.success('搜索成功~')
+          this.$message.success(this.$t('article.searchSuccess'))
         } else if (result.code === ResultCode.ServerInnerError) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
         }
       })
     },

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <el-select v-model="form.animalId" placeholder="请选择要提交申请的动物" style="width: 200px;">
+    <el-select v-model="form.animalId" :placeholder="$t('animal.selectAnimal')" style="width: 200px;">
       <el-option
         v-for="item in foundAnimals"
         :key="item.id"
@@ -8,7 +8,7 @@
         :value="item.id"
       />
     </el-select>
-    <el-select v-model="form.userId" placeholder="请选择要救助的用户" style="width: 200px;">
+    <el-select v-model="form.userId" :placeholder="$t('animal.selectUser')" style="width: 200px;">
       <el-option
         v-for="item in followUsers"
         :key="item.id"
@@ -18,11 +18,11 @@
     </el-select>
 
     <el-popconfirm
-      confirm-button-text="提交"
-      cancel-button-text="手滑了"
+      :confirm-button-text="$t('common.submit')"
+      :cancel-button-text="$t('common.oops')"
       icon="el-icon-info"
       icon-color="red"
-      title="确定提交救助动物吗？"
+      :title="$t('article.confirmRescue')"
       @onConfirm="postSave()"
     >
       <el-button
@@ -79,7 +79,7 @@ export default {
           this.loading = false
           return
         } else if (res.code === ResultCode.ServerInnerError) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
           this.loading = false
         }
       })
@@ -107,7 +107,7 @@ export default {
           this.loading = false
           return
         } else if (res.code === ResultCode.ServerInnerError) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
           this.loading = false
         }
       })
@@ -133,14 +133,14 @@ export default {
           return
         }
         if (res.code === ResultCode.SuccessCode) {
-          this.$message.success('提交救助成功啦喵')
+          this.$message.success(this.$t('article.rescueSuccess'))
           this.loading = false
         } else if (res.code === ResultCode.BadRequest) {
           self.$message.error(res.message)
           this.loading = false
           return
         } else if (res.code === ResultCode.ServerInnerError) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
           this.loading = false
         }
       })

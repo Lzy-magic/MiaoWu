@@ -5,7 +5,7 @@
       align="center"
       label="ID"
       width="65"
-      element-loading-text="请给我点时间！"
+      :element-loading-text="$t('common.loadingWait')"
     >
       <template slot-scope="scope">
         <span>{{ scope.row.id }}</span>

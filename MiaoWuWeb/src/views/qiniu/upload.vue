@@ -2,15 +2,15 @@
   <el-upload :data="dataObj" :multiple="true" :before-upload="beforeUpload" action="https://upload.qbox.me" drag>
     <i class="el-icon-upload" />
     <div class="el-upload__text">
-      将文件拖到此处，或<em>点击上传</em>
+      {{ $t('common.dropFile') }}<em>{{ $t('common.clickUpload') }}</em>
     </div>
   </el-upload>
 </template>
 
 <script>
 import { getToken } from '@/api/qiniu'
-// 获取七牛token 后端通过Access Key,Secret Key,bucket等生成token
-// 七牛官方sdk https://developer.qiniu.com/sdk#official-sdk
+// Fetch a Qiniu upload token; the backend generates it from the Access Key, Secret Key, bucket, etc.
+// Official Qiniu SDKs: https://developer.qiniu.com/sdk#official-sdk
 
 export default {
   data() {

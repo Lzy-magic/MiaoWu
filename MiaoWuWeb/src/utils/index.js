@@ -1,3 +1,5 @@
+import i18n from '@/lang'
+
 /**
  * Created by PanJiaChen on 16/11/18.
  */
@@ -45,7 +47,7 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') { return i18n.t('time.weekday' + value) }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -68,29 +70,27 @@ export function formatTime(time, option) {
   const diff = (now - d) / 1000
 
   if (diff < 30) {
-    return '刚刚'
+    return i18n.t('time.justNow')
   } else if (diff < 3600) {
     // less 1 hour
-    return Math.ceil(diff / 60) + '分钟前'
+    const minutes = Math.ceil(diff / 60)
+    return i18n.tc('time.minutesAgo', minutes, { n: minutes })
   } else if (diff < 3600 * 24) {
-    return Math.ceil(diff / 3600) + '小时前'
+    const hours = Math.ceil(diff / 3600)
+    return i18n.tc('time.hoursAgo', hours, { n: hours })
   } else if (diff < 3600 * 24 * 2) {
-    return '1天前'
+    return i18n.t('time.oneDayAgo')
   }
   if (option) {
     return parseTime(time, option)
   } else {
-    return (
-      d.getMonth() +
-      1 +
-      '月' +
-      d.getDate() +
-      '日' +
-      d.getHours() +
-      '时' +
-      d.getMinutes() +
-      '分'
-    )
+    return i18n.t('time.monthDayTime', {
+      month: d.getMonth() + 1,
+      day: d.getDate(),
+      hour: d.getHours(),
+      minute: d.getMinutes(),
+      mm: d.getMinutes().toString().padStart(2, '0')
+    })
   }
 }
 
@@ -253,15 +253,15 @@ export function debounce(func, wait, immediate) {
   let timeout, args, context, timestamp, result
 
   const later = function() {
-    // 据上一次触发时间间隔
+    // Time elapsed since the last trigger
     const last = +new Date() - timestamp
 
-    // 上次被包装函数被调用时间间隔 last 小于设定时间间隔 wait
+    // The last call of the wrapped function is more recent than the wait interval
     if (last < wait && last > 0) {
       timeout = setTimeout(later, wait - last)
     } else {
       timeout = null
-      // 如果设定为immediate===true，因为开始边界已经调用过了此处无需调用
+      // With immediate === true the function already ran on the leading edge, so skip it here
       if (!immediate) {
         result = func.apply(context, args)
         if (!timeout) context = args = null
@@ -273,7 +273,7 @@ export function debounce(func, wait, immediate) {
     context = this
     timestamp = +new Date()
     const callNow = immediate && !timeout
-    // 如果延时不存在，重新设定延时
+    // If no timer is pending, start a new one
     if (!timeout) timeout = setTimeout(later, wait)
     if (callNow) {
       result = func.apply(context, args)

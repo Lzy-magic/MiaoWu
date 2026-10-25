@@ -9,7 +9,7 @@
               icon="el-icon-back"
               style="padding-bottom: 0px; margin-bottom: 10px"
               @click="goBack"
-            >返回
+            >{{ $t('common.back') }}
             </el-button>
           </div>
         </el-col>
@@ -17,14 +17,14 @@
           <div>
             <div>
               <h3 style="margin-top: 0px;margin-bottom: 0px">{{ article.title }}</h3>
-              <span class="description"> 作者: {{ author.name }}</span>
+              <span class="description"> {{ $t('article.author') }} {{ author.name }}</span>
             </div>
             <el-button
               v-if="userId !== article.authorId"
               type="primary"
               style="margin-top: 10px"
               @click="handleFollow"
-            >关注
+            >{{ $t('article.follow') }}
             </el-button>
             <div
               style="width: 100%;margin-top: 5px;display: flex;justify-content: flex-end;align-items: center"
@@ -32,8 +32,8 @@
               <!--          <div style="display: inline; color: #20a0ff;margin-left: 50px;margin-right:20px;font-size: 12px;">-->
               <!--            {{article.nickname}}-->
               <!--          </div>-->
-              <!--          todo 浏览次数-->
-              <!--          <span style="color: #20a0ff;margin-right:20px;font-size: 12px;">浏览 {{article.pageView==null?0:article.pageView}}</span>-->
+              <!--          TODO: view count-->
+              <!--          <span style="color: #20a0ff;margin-right:20px;font-size: 12px;">Views {{article.pageView==null?0:article.pageView}}</span>-->
               <span
                 style="color: #20a0ff;margin-right:20px;font-size: 12px;"
               >{{ new Date(article.lastUpdate).getTime() | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
@@ -54,7 +54,7 @@
         </el-col>
       </el-row>
 
-      <h3>评论区</h3>
+      <h3>{{ $t('article.comments') }}</h3>
       <div v-for="(comment,index) in comments" id="comment-container" :key="index">
         <div style="text-align: left; margin-bottom: 5px">
           {{ comment.user.name }}
@@ -62,11 +62,11 @@
             style="color: #20a0ff;margin-right:20px;font-size: 12px;"
           >{{ new Date(comment.date).getTime() | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           <el-popconfirm
-            confirm-button-text="提交"
-            cancel-button-text="手滑了"
+            :confirm-button-text="$t('common.submit')"
+            :cancel-button-text="$t('common.oops')"
             icon="el-icon-info"
             icon-color="red"
-            title="确定取消关注吗？"
+            :title="$t('article.confirmUnfollow')"
             @onConfirm="postSave(comment.user.id)"
           >
             <el-button
@@ -74,7 +74,7 @@
               type="primary"
               style="margin-top: 10px"
               @click="handleFollow"
-            >取消关注
+            >{{ $t('article.unfollow') }}
             </el-button>
           </el-popconfirm>
           <el-button
@@ -82,14 +82,14 @@
             type="primary"
             style="margin-top: 10px"
             @click="handleFollow"
-          >关注
+          >{{ $t('article.follow') }}
           </el-button>
           <el-popconfirm
-            confirm-button-text="提交"
-            cancel-button-text="手滑了"
+            :confirm-button-text="$t('common.submit')"
+            :cancel-button-text="$t('common.oops')"
             icon="el-icon-info"
             icon-color="red"
-            title="确定提交救助动物吗？"
+            :title="$t('article.confirmRescue')"
             @onConfirm="postSave(comment.user.id)"
           >
             <el-button
@@ -97,7 +97,7 @@
               slot="reference"
               type="primary"
               style=""
-            >提交救助动物
+            >{{ $t('article.submitRescue') }}
             </el-button>
           </el-popconfirm>
         </div>
@@ -109,11 +109,11 @@
         v-loading="commentLoading"
         type="textarea"
         :rows="2"
-        placeholder="添加评论"
+        :placeholder="$t('article.addComment')"
         style="margin-top: 10px"
       />
 
-      <el-button type="primary" style="margin-top: 10px" @click="commitComment">提交评论</el-button>
+      <el-button type="primary" style="margin-top: 10px" @click="commitComment">{{ $t('article.submitComment') }}</el-button>
     </el-main>
     <el-footer style />
   </el-container>
@@ -188,13 +188,13 @@ export default {
         })
         .then((result, error) => {
           if (error) {
-            this.$message.error('服务器出错喵~')
+            this.$message.error(this.$t('common.serverError'))
             return
           }
           if (result.code === ResultCode.SuccessCode) {
             this.articleData = result.data
           } else if (result.code === ResultCode.ServerInnerError) {
-            this.$message.error('服务器出错喵~')
+            this.$message.error(this.$t('common.serverError'))
           }
         })
     },
@@ -226,14 +226,14 @@ export default {
           }
           if (res.code === ResultCode.SuccessCode) {
             self.commentLoading = false
-            self.$message.success('发表评论成功喵~')
+            self.$message.success(self.$t('article.commentSuccess'))
             self.$router.go(0)
           } else if (res.code === ResultCode.BadRequest) {
             self.commentLoading = false
             self.$message.error(res.message)
           } else if (res.code === ResultCode.ServerInnerError) {
             self.commentLoading = false
-            this.$message.error('服务器出错喵~')
+            this.$message.error(this.$t('common.serverError'))
             return
           }
         })
@@ -241,9 +241,9 @@ export default {
     handleFollow() {
       const self = this
       const url = settings.apiUrl + 'follows'
-      // 双重保险
+      // Double check (the button should already be hidden)
       if (this.article.authorId === self.$store.getters.id) {
-        this.$message.error('不能关注自己~')
+        this.$message.error(this.$t('article.cannotFollowSelf'))
       }
       const form = {
         userId: this.article.authorId,
@@ -263,19 +263,19 @@ export default {
             return
           }
           if (res.code === ResultCode.SuccessCode) {
-            self.$message.success('关注成功~')
+            self.$message.success(self.$t('article.followSuccess'))
           } else if (res.code === ResultCode.CancelSuccessCode) {
-            self.$message.success('取消关注成功~')
+            self.$message.success(self.$t('article.unfollowSuccess'))
           } else if (res.code === ResultCode.BadRequest) {
             self.$message.error(res.message)
           } else if (res.code === ResultCode.ServerInnerError) {
-            this.$message.error('服务器出错喵~')
+            this.$message.error(this.$t('common.serverError'))
             return
           }
         })
     },
     postSave(userId) {
-      // todo 未测试
+      // TODO: untested
       const url = settings.apiUrl + 'saves'
       const self = this
       const form = {
@@ -296,14 +296,14 @@ export default {
           return
         }
         if (res.code === ResultCode.SuccessCode) {
-          this.$message.success('提交救助成功啦喵')
+          this.$message.success(this.$t('article.rescueSuccess'))
           this.loading = false
         } else if (res.code === ResultCode.BadRequest) {
           self.$message.error(res.message)
           this.loading = false
           return
         } else if (res.code === ResultCode.ServerInnerError) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
           this.loading = false
         }
       })

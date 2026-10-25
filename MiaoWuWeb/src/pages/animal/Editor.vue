@@ -1,28 +1,28 @@
 <template>
   <div class="container">
-    <el-button type="text" @click="back">返回</el-button>
-    发现动物
+    <el-button type="text" @click="back">{{ $t('common.back') }}</el-button>
+    {{ $t('animal.title') }}
     <el-form ref="form" :model="form" label-width="80px">
-      <el-form-item label="动物昵称">
+      <el-form-item :label="$t('animal.name')">
         <el-input v-model="form.name" />
       </el-form-item>
-      <el-form-item label="年龄">
+      <el-form-item :label="$t('animal.age')">
         <el-input v-model="form.age" />
       </el-form-item>
-      <el-form-item label="性别">
-        <el-select v-model="form.gender" placeholder="请选择动物性别">
-          <el-option label="雄性" value="male" />
-          <el-option label="雌性" value="female" />
+      <el-form-item :label="$t('animal.gender')">
+        <el-select v-model="form.gender" :placeholder="$t('animal.selectGender')">
+          <el-option :label="$t('animal.male')" value="male" />
+          <el-option :label="$t('animal.female')" value="female" />
         </el-select>
       </el-form-item>
-      <el-form-item label="生日">
+      <el-form-item :label="$t('animal.birthday')">
         <el-col :span="11">
-          <el-date-picker v-model="form.date" type="date" placeholder="选择生日" style="width: 100%;" />
+          <el-date-picker v-model="form.date" type="date" :placeholder="$t('animal.selectBirthday')" style="width: 100%;" />
         </el-col>
         <el-col class="line" :span="2">-</el-col>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">发布</el-button>
+        <el-button type="primary" @click="onSubmit">{{ $t('animal.publish') }}</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -69,13 +69,13 @@ export default {
           return
         }
         if (res.code === ResultCode.SuccessCode) {
-          self.$message.success('发现动物成功啦喵')
+          self.$message.success(self.$t('animal.createSuccess'))
           self.loading = false
         } else if (res.code === ResultCode.BadRequest) {
           self.$message.error(res.message)
           self.loading = false
         } else if (res.code === ResultCode.ServerInnerError) {
-          this.$message.error('服务器出错喵~')
+          this.$message.error(this.$t('common.serverError'))
           self.loading = false
         }
       })

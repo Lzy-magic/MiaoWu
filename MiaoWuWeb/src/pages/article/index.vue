@@ -2,20 +2,20 @@
   <div>
     <el-card :body-style="{ padding: '0px' }" style>
       <div style="padding: 14px;">
-        <el-link type="primary" @click="toArticleListPage">文章列表</el-link>
+        <el-link type="primary" @click="toArticleListPage">{{ $t('home.articleList') }}</el-link>
       </div>
     </el-card>
     <el-card :body-style="{ padding: '0px' }" style>
       <div style="padding: 14px;">
-        <el-link type="primary" @click="toUserCenterPage">用户中心</el-link>
+        <el-link type="primary" @click="toUserCenterPage">{{ $t('home.userCenter') }}</el-link>
       </div>
     </el-card>
     <el-card :body-style="{ padding: '0px' }" style>
       <div style="padding: 14px;">
-        <el-link type="primary" @click="toFindAnimalPage">发现动物</el-link>
+        <el-link type="primary" @click="toFindAnimalPage">{{ $t('home.findAnimal') }}</el-link>
       </div>
     </el-card>
-    <h5>欢迎来到喵呜</h5>
+    <h5>{{ $t('home.welcome') }}</h5>
   </div>
 </template>
 
@@ -62,7 +62,7 @@ export default {
           if (result.code === ResultCode.SuccessCode) {
             self.$store.state.userInfo = result.data
           } else if (result.code === ResultCode.ServerInnerError) {
-            this.$message.error('服务器出错喵~')
+            this.$message.error(this.$t('common.serverError'))
           }
         })
     },

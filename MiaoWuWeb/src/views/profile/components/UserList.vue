@@ -1,12 +1,12 @@
 <template>
   <el-row>
     <div v-if="!users">
-      <span>没有相关信息哦~</span>
+      <span>{{ $t('profile.noInfo') }}</span>
     </div>
     <el-col v-for="(user, index) in users" :key="index" :span="8" :offset="2">
       <el-card :body-style="{ padding: '0px' }" style>
         <img class="avator" src="@/static/profile.jpg">
-        <el-button v-if="follows" type="primary" @click="addOrDelFollow(user.id)">取消关注</el-button>
+        <el-button v-if="follows" type="primary" @click="addOrDelFollow(user.id)">{{ $t('article.unfollow') }}</el-button>
         <div style="padding: 14px;">
           <p type="primary" @click="toArticleDetail(article.id)">{{ user.name }}</p>
           <div class="bottom clearfix" style="font-size: 11px" />
@@ -68,14 +68,14 @@ export default {
             return
           }
           if (res.code === ResultCode.SuccessCode) {
-            self.$message.success('关注成功~')
+            self.$message.success(self.$t('article.followSuccess'))
           } else if (res.code === ResultCode.CancelSuccessCode) {
-            self.$message.success('取消关注成功~')
+            self.$message.success(self.$t('article.unfollowSuccess'))
             self.$router.go(-1)
           } else if (res.code === ResultCode.BadRequest) {
             self.$message.error(res.message)
           } else if (res.code === ResultCode.ServerInnerError) {
-            this.$message.error('服务器出错喵~')
+            this.$message.error(this.$t('common.serverError'))
             return
           }
         })
