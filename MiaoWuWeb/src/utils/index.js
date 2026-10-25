@@ -1,4 +1,8 @@
-import i18n from '@/lang'
+// Load i18n lazily: the mock server (plain Node, no webpack aliases or DOM)
+// imports helpers from this file but never calls the translated ones.
+function i18n() {
+  return require('@/lang').default
+}
 
 /**
  * Created by PanJiaChen on 16/11/18.
@@ -47,7 +51,7 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return i18n.t('time.weekday' + value) }
+    if (key === 'a') { return i18n().t('time.weekday' + value) }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -70,21 +74,21 @@ export function formatTime(time, option) {
   const diff = (now - d) / 1000
 
   if (diff < 30) {
-    return i18n.t('time.justNow')
+    return i18n().t('time.justNow')
   } else if (diff < 3600) {
     // less 1 hour
     const minutes = Math.ceil(diff / 60)
-    return i18n.tc('time.minutesAgo', minutes, { n: minutes })
+    return i18n().tc('time.minutesAgo', minutes, { n: minutes })
   } else if (diff < 3600 * 24) {
     const hours = Math.ceil(diff / 3600)
-    return i18n.tc('time.hoursAgo', hours, { n: hours })
+    return i18n().tc('time.hoursAgo', hours, { n: hours })
   } else if (diff < 3600 * 24 * 2) {
-    return i18n.t('time.oneDayAgo')
+    return i18n().t('time.oneDayAgo')
   }
   if (option) {
     return parseTime(time, option)
   } else {
-    return i18n.t('time.monthDayTime', {
+    return i18n().t('time.monthDayTime', {
       month: d.getMonth() + 1,
       day: d.getDate(),
       hour: d.getHours(),
