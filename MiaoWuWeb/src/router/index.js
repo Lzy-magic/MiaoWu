@@ -20,7 +20,7 @@ import Layout from '@/layout'
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
     roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
+    title: 'title'               key under route.* in src/lang, shown in sidebar, breadcrumb and tags (recommend set)
     icon: 'svg-name'             the icon show in the sidebar
     noCache: true                if set true, the page will no be cached(default is false)
     affix: true                  if set true, the tag will affix in the tags-view
@@ -80,7 +80,7 @@ export const constantRoutes = [
         path: 'article',
         component: () => import('@/pages/article/index'),
         name: 'Article',
-        meta: { title: '主界面', icon: 'clipboard', affix: true }
+        meta: { title: 'home', icon: 'clipboard', affix: true }
       }]
   },
   // {
@@ -118,7 +118,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/profile/index'),
         name: 'Profile',
-        meta: { title: '个人中心', icon: 'user', noCache: true }
+        meta: { title: 'profile', icon: 'user', noCache: true }
       }
     ]
   }
@@ -135,7 +135,7 @@ export const asyncRoutes = [
     name: 'article',
     // alwaysShow: true, // will always show the root menu
     meta: {
-      title: '文章中心',
+      title: 'articleCenter',
       icon: 'documentation'
     },
     children: [
@@ -143,20 +143,20 @@ export const asyncRoutes = [
         path: 'list',
         component: () => import('@/pages/article/List'),
         name: 'article_list',
-        meta: { title: '文章列表', icon: 'documentation' }
+        meta: { title: 'articleList', icon: 'documentation' }
       },
       {
         path: 'editor',
         component: () => import('@/pages/article/Editor'),
         name: 'article_editor',
-        meta: { title: '编辑文章', icon: 'documentation' }
+        meta: { title: 'articleEditor', icon: 'documentation' }
       },
       {
         path: 'articleDetail',
         name: 'article_detail',
         component: () => import('@/pages/article/articleDetail'),
         hidden: true,
-        meta: { title: '浏览文章', icon: 'documentation' }
+        meta: { title: 'articleDetail', icon: 'documentation' }
       }
     ]
   },
@@ -166,7 +166,7 @@ export const asyncRoutes = [
     name: 'animal',
     // alwaysShow: true, // will always show the root menu
     meta: {
-      title: '动物中心',
+      title: 'animalCenter',
       icon: 'documentation'
     },
     children: [
@@ -174,13 +174,13 @@ export const asyncRoutes = [
         path: 'editor',
         component: () => import('@/pages/animal/Editor'),
         name: 'article_list',
-        meta: { title: '发现动物', icon: 'documentation' }
+        meta: { title: 'animalEditor', icon: 'documentation' }
       }
       // {
       //   path: 'postSave',
       //   component: () => import('@/pages/animal/postSave'),
       //   name: 'postSave',
-      //   meta: { title: '提交救助动物', icon: 'documentation'}
+      //   meta: { title: 'animalRescue', icon: 'documentation'}
       // },
     ]
   },

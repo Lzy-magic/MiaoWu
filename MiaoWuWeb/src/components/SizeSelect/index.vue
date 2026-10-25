@@ -14,17 +14,13 @@
 
 <script>
 export default {
-  data() {
-    return {
-      sizeOptions: [
-        { label: 'Default', value: 'default' },
-        { label: 'Medium', value: 'medium' },
-        { label: 'Small', value: 'small' },
-        { label: 'Mini', value: 'mini' }
-      ]
-    }
-  },
   computed: {
+    sizeOptions() {
+      return ['default', 'medium', 'small', 'mini'].map(value => ({
+        value,
+        label: this.$t('sizeSelect.' + value)
+      }))
+    },
     size() {
       return this.$store.getters.size
     }
@@ -35,7 +31,7 @@ export default {
       this.$store.dispatch('app/setSize', size)
       this.refreshView()
       this.$message({
-        message: 'Switch Size Success',
+        message: this.$t('sizeSelect.switchSuccess'),
         type: 'success'
       })
     },

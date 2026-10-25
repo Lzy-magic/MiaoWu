@@ -1,5 +1,5 @@
 module.exports = {
-  title: '喵呜（流浪动物救助平台）',
+  title: 'MiaoWu (Stray Animal Rescue Platform)', // the translated title lives in src/lang (common.appTitle)
 
   /**
    * @type {boolean} true | false
