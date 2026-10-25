@@ -62,7 +62,7 @@ public class ArticleController {
     }
 
     @DeleteMapping(value = "{id}")
-    public APIResult deleteById(Long id) {
+    public APIResult deleteById(@PathVariable Long id) {
         return articleService.deleteById(id);
     }
 

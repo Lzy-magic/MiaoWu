@@ -33,7 +33,7 @@ public class AnimalController {
 
     @NoneAuth
     @GetMapping(value = "userId={userId}")
-    APIResult findFoundAnimalByUserId(Long userId){
+    APIResult findFoundAnimalByUserId(@PathVariable Long userId){
         return animalService.findFoundAnimalByUserId(userId);
     }
 
