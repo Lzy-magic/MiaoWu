@@ -90,7 +90,7 @@
 | axios | 0.18.1 |
 | ECharts | 4.2.1 |
 | @vue/cli-service | 3.5.3 |
-| node-sass / sass-loader | ^4.9.0 / ^7.1.0 |
+| sass (dart-sass) / sass-loader | ~1.32.13 / ^10.4.1 |
 
 ## 目录结构
 
@@ -132,7 +132,7 @@ MiaoWu/
 | Redis | 5+ | 存储登录 Token |
 | RabbitMQ | 3.x | 启动时必需（存在 `@RabbitListener`） |
 | Elasticsearch | 7.x，**可选** | 仅用于文章模糊搜索，不启动也能运行 |
-| Node.js | 16（通过 nvm） | 见下文 node-sass 说明 |
+| Node.js | 16（通过 nvm） | 使用 dart-sass，无需本地编译 |
 | Lombok IDE 插件 | - | IDE 中编译需要 |
 
 ## 安装部署
@@ -172,7 +172,7 @@ sudo rabbitmqctl set_permissions -p / <mq_user> ".*" ".*" ".*"
 
 ### 3. Elasticsearch（可选）
 
-`ElasticSearchConfig` 硬编码连接 `http://127.0.0.1:9200`。未启动时只有模糊搜索接口会失败。
+`ElasticSearchConfig` 从 `miaowu.elasticsearch.host` / `port` / `scheme` 读取 REST 地址（默认 `localhost` / `9200` / `http`，可用环境变量 `ES_HOST`、`ES_PORT`、`ES_SCHEME` 或 `--miaowu.elasticsearch.port=...` 覆盖）。请使用 HTTP 端口 9200，而不是 transport 端口 9300。未启动时只有模糊搜索接口会失败。
 
 ## 配置说明
 
@@ -189,7 +189,7 @@ sudo rabbitmqctl set_permissions -p / <mq_user> ".*" ".*" ".*"
 | `spring.redis.jedis.pool.*` | max-idle 500、min-idle 50、max-wait -1、max-active -1 | Jedis 连接池 |
 | `spring.cache.redis.time-to-live` | `-1` | 缓存过期时间 |
 | `spring.rabbitmq.host` / `port` / `username` / `password` | `127.0.0.1` / `5672` / `<mq_user>` / `<mq_password>` | RabbitMQ |
-| `spring.data.elasticsearch.cluster-name` / `cluster-nodes` | `my-cluster` / `localhost:9300` | ES transport 配置（代码中 REST 客户端实际使用 9200） |
+| `miaowu.elasticsearch.host` / `port` / `scheme` | `${ES_HOST:localhost}` / `${ES_PORT:9200}` / `${ES_SCHEME:http}` | Elasticsearch REST 地址 |
 | `mybatis.mapper-locations` | `classpath:/mapper/**/*.xml` | Mapper XML 路径 |
 | `eureka.*` | 客户端已禁用 | 遗留的 Eureka 配置 |
 | `logging.config` | `classpath:log4j2.yml` | 日志配置 |
@@ -224,6 +224,15 @@ curl http://localhost:8088/articles/1
 
 Swagger UI：`http://localhost:8088/swagger-ui.html`。
 
+### 运行后端测试
+
+```bash
+cd MiaoWuServer
+mvn test
+```
+
+测试需要本地 MySQL `miaowu` 库、Redis 和 RabbitMQ（与运行应用相同），但不依赖已有数据：每个测试前由 `src/test/resources/sql/test-seed.sql` 插入 id 为 `900001` 的测试用户（占位手机号 `19900000000`）、动物和文章，测试后由 `test-cleanup.sql` 删除。Elasticsearch 不可用时，ES 测试会通过 JUnit `Assumptions` 自动跳过。
+
 ## 运行前端
 
 ```bash
@@ -235,16 +244,19 @@ npm run dev        # http://localhost:9527
 
 其他脚本：`npm run build:prod`、`npm run build:stage`、`npm run lint`、`npm run test:unit`。
 
-**node-sass 说明：** `node-sass@^4` 没有 Node 16 的预编译包，安装会失败；换成 dart-sass 也不行，因为样式中使用了 `/deep/` 选择器。本地可用的做法：
+**Sass：** 样式使用 dart-sass（`sass` + `sass-loader@10`）编译，Node 16 下直接 `npm install` 即可。深度选择器请使用 `::v-deep`（dart-sass 不支持 `/deep/` 和 `>>>`）。
 
-```bash
-npm install --ignore-scripts
-npm install --no-save --legacy-peer-deps node-sass@6.0.1 sass-loader@10.4.1
-```
+**Lint：** `npm run lint` 会检查整个 `src/`（`.eslintignore` 中已不再排除）。
 
-（也可以改用 Node 14 配合原始版本。）
+**与后端的连接（开发代理）：** 接口请求发往 `VUE_APP_BASE_API`（`.env.development` 中为 `/dev-api`），开发服务器把该前缀代理到后端并去掉前缀，例如 `http://localhost:9527/dev-api/animals` -> `http://localhost:8088/animals`。可在 `.env.development`（或 `.env.development.local` / 环境变量）中配置：
 
-**与后端的连接：** `.env.development` 中 `VUE_APP_BASE_API = '/dev-api'`，开发服务器挂载了 `mock/mock-server.js`。`vue.config.js` 中**没有**到 8088 后端的代理，因此开发环境默认使用 mock 数据；如需联调，请添加 `devServer.proxy` 或修改 base API。
+| 变量 | 默认值 | 说明 |
+|---|---|---|
+| `VUE_APP_PROXY_TARGET` | `http://localhost:8088` | 代理转发的后端地址 |
+| `VUE_APP_USE_MOCK` | `true` | 设为 `false` 关闭 mock 服务；mock 路由位于 `/dev-api/vue-element-admin/...`，优先于代理匹配 |
+| `VUE_APP_API_URL` | 空 | 设置后（如 `http://localhost:8088/`）前端直接请求后端，不走代理。`.env.production` / `.env.staging` 已设置，因为打包产物没有开发代理 |
+
+示例：`VUE_APP_USE_MOCK=false npm run dev`。
 
 ## 接口概览
 
@@ -295,19 +307,17 @@ npm install --no-save --legacy-peer-deps node-sass@6.0.1 sass-loader@10.4.1
 3. **JDBC URL 拼写错误**：`charactterEncoding` 应为 `characterEncoding`；另外 connector 8.x 下 `com.mysql.jdbc.Driver` 已弃用（应使用 `com.mysql.cj.jdbc.Driver`）。
 4. **新版数据库的 SSL 问题**：旧的 TLS 默认配置连接 MariaDB 11 / MySQL 8 会失败，请使用 `useSSL=false` 或正确配置 TLS。
 5. **`application.yml` 中包含凭据**：仓库里提交了看起来是真实的账号密码，建议改用环境变量或不提交的 profile。
-6. **Elasticsearch 配置不一致**：`application.yml` 指向 transport 端口 9300，但 `ElasticSearchConfig` 硬编码了 REST 地址 `127.0.0.1:9200`。
-7. **路径变量路由**：`page={page}&count={count}` 会被当作单个路径段匹配，可能与 `/{id}` 冲突；实测 `GET /articles/page=1&count=10` 返回 HTTP 400（无法转换为 `Long`）。改用查询参数会更可靠。
-8. **`mapper/extend/` 中的 Mapper XML 问题**：
+6. **路径变量路由**：`page={page}&count={count}` 会被当作单个路径段匹配，可能与 `/{id}` 冲突；实测 `GET /articles/page=1&count=10` 返回 HTTP 400（无法转换为 `Long`）。改用查询参数会更可靠。
+7. **`mapper/extend/` 中的 Mapper XML 问题**：
    - `ArticleMapperExtend.xml` 有 8 处写成了 `#{id.jdbcType=BIGINT}`（逗号写成了点）。
    - `selectArticleWithLabelById` 引用了未定义的别名 `art`。
    - `selectCommentArticleByArticleId` 查询了不存在的列 `c.content`（应为 `comment_content`）。
    - `selectLastUpdate` 是空的 `SELECT`，`UserMapperExtend.selectUserWithFollowsAndFansById` 没有 SQL。
    - `commentResultMap` 把 `date` 列映射到了 `userId` 属性。
    - `UserMapperExtend.ArticleResultMap` 使用了 `thump_up` / `thumpUp`，应为 `thumb_up`。
-9. **拦截器白名单**：`LoginInterceptor` 对 URI 做精确比较，`/webjars/**` 这类通配条目永远匹配不上。
-10. **跨域配置**：`allowedOrigins("*")` 与 `allowCredentials(true)` 同时使用，会被浏览器以及新版 Spring 拒绝。
-11. **前端构建**：`node-sass@^4` 无法在 Node 16+ 上构建（见上文）；开发服务器使用 mock 数据，没有代理到后端。
-12. **图片上传**：图片写入 servlet context 的真实路径，在内嵌 Tomcat 下这是临时目录，重启后图片会丢失。
+8. **拦截器白名单**：`LoginInterceptor` 对 URI 做精确比较，`/webjars/**` 这类通配条目永远匹配不上。
+9. **跨域配置**：`allowedOrigins("*")` 与 `allowCredentials(true)` 同时使用，会被浏览器以及新版 Spring 拒绝。
+10. **图片上传**：图片写入 servlet context 的真实路径，在内嵌 Tomcat 下这是临时目录，重启后图片会丢失。
 
 ## 许可证
 
