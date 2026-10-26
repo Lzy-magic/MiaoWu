@@ -48,6 +48,7 @@
         <mavon-editor
           ref="md"
           v-model="article.mdContent"
+          :language="editorLanguage"
           style="height: 100%;width: 100%;"
           @imgAdd="imgAdd"
           @imgDel="imgDel"
@@ -100,6 +101,11 @@ export default {
       isSelectAnimalShow: true,
       isTagShow: true,
       isUpdateMode: false
+    }
+  },
+  computed: {
+    editorLanguage() {
+      return this.$i18n.locale === 'zh-CN' ? 'zh-CN' : 'en'
     }
   },
   mounted: function() {

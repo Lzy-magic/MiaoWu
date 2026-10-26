@@ -225,26 +225,20 @@ export default {
     }
   },
   data() {
-    const { imgFormat, langType, langExt, width, height } = this
+    const { imgFormat, width, height } = this
     let isSupported = true
     const allowImgFormat = ['jpg', 'png']
     const tempImgFormat =
       allowImgFormat.indexOf(imgFormat) === -1 ? 'jpg' : imgFormat
-    const lang = Object.assign({}, language[langType] ? language[langType] : this.$t('imageCropper'))
     const mime = mimes[tempImgFormat]
     // Normalize the image format
     this.imgFormat = tempImgFormat
-    if (langExt) {
-      Object.assign(lang, langExt)
-    }
     if (typeof FormData !== 'function') {
       isSupported = false
     }
     return {
       // Image MIME type
       mime,
-      // Language pack
-      lang,
       // Whether the browser supports this widget
       isSupported,
       // Whether the browser supports touch events
@@ -256,7 +250,7 @@ export default {
       progress: 0,
       // Whether there is an error, and its message
       hasError: false,
-      errorMsg: '',
+      errorKey: '',
       // Aspect ratio of the requested image
       ratio: width / height,
       // Source image URL and generated image URL
@@ -304,6 +298,18 @@ export default {
     }
   },
   computed: {
+    lang() {
+      return Object.assign({}, language[this.langType] || this.$t('imageCropper'), this.langExt)
+    },
+    errorMsg() {
+      switch (this.errorKey) {
+        case 'onlyImg': return this.lang.error.onlyImg
+        case 'outOfSize': return this.lang.error.outOfSize + this.maxSize + 'kb'
+        case 'lowestPx': return this.lang.error.lowestPx + this.width + '*' + this.height
+        case 'fail': return this.lang.fail
+        default: return ''
+      }
+    },
     // Progress bar style
     progressStyle() {
       const { progress } = this
@@ -453,17 +459,17 @@ export default {
     /* ---------------------------------------------------------------*/
     // Check whether the selected file is acceptable
     checkFile(file) {
-      const { lang, maxSize } = this
+      const { maxSize } = this
       // images only
       if (file.type.indexOf('image') === -1) {
         this.hasError = true
-        this.errorMsg = lang.error.onlyImg
+        this.errorKey = 'onlyImg'
         return false
       }
       // file too large
       if (file.size / 1024 > maxSize) {
         this.hasError = true
-        this.errorMsg = lang.error.outOfSize + maxSize + 'kb'
+        this.errorKey = 'outOfSize'
         return false
       }
       return true
@@ -472,7 +478,7 @@ export default {
     reset() {
       this.loading = 0
       this.hasError = false
-      this.errorMsg = ''
+      this.errorKey = ''
       this.progress = 0
     },
     // Set the image source
@@ -492,8 +498,7 @@ export default {
         ratio,
         scale,
         sourceImgUrl,
-        sourceImgMasking,
-        lang
+        sourceImgMasking
       } = this
       const sim = sourceImgMasking
       const img = new Image()
@@ -509,7 +514,7 @@ export default {
         // image resolution is too low
         if (nWidth < width || nHeight < height) {
           this.hasError = true
-          this.errorMsg = lang.error.lowestPx + width + '*' + height
+          this.errorKey = 'lowestPx'
           return false
         }
         if (ratio > nRatio) {
@@ -759,7 +764,6 @@ export default {
     // Upload the image
     upload() {
       const {
-        lang,
         imgFormat,
         mime,
         url,
@@ -803,7 +807,7 @@ export default {
           if (this.value) {
             this.loading = 3
             this.hasError = true
-            this.errorMsg = lang.fail
+            this.errorKey = 'fail'
             this.$emit('crop-upload-fail', err, field, ki)
           }
         })
