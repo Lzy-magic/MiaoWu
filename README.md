@@ -274,9 +274,12 @@ The web UI uses [vue-i18n](https://kazupon.github.io/vue-i18n/) v8. English (`en
 
 **Rule: no Chinese characters in code.** Source code, comments, logs and API messages must be in English. Chinese text is only allowed in `MiaoWuWeb/src/lang/zh-CN.js` and `README.zh-CN.md`. Check with:
 
+README.ja.md is excluded only because it is Japanese documentation and contains Han kanji.
+
 ```bash
-rg -n '[\x{4e00}-\x{9fff}]' -g '!node_modules' -g '!target' -g '!dist' -g '!*.log' \
-  -g '!**/lang/zh-CN.js' -g '!**/README.zh-CN.md' -g '!**/README.ja.md'
+rg --hidden -n '[\p{Han}\x{3000}-\x{303f}\x{ff01}-\x{ff60}]' \
+  -g '!node_modules' -g '!target' -g '!dist' -g '!.git' -g '!*.log' \
+  -g '!MiaoWuWeb/src/lang/zh-CN.js' -g '!README.zh-CN.md' -g '!MiaoWuWeb/README.ja.md'
 ```
 
 ## API Overview

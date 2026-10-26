@@ -1,4 +1,4 @@
-# There are 8 levels, from low to high: ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF。
+# There are 8 levels, from low to high: ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF.
 
 Configuration:
   status: warn

@@ -274,9 +274,12 @@ npm run dev        # http://localhost:9527
 
 **规则：代码中不得出现中文。**源代码、注释、日志和接口消息必须使用英文，中文只允许出现在 `MiaoWuWeb/src/lang/zh-CN.js` 和 `README.zh-CN.md` 中。检查命令：
 
+README.ja.md 仅因其为包含汉字的日语文档而被排除。
+
 ```bash
-rg -n '[\x{4e00}-\x{9fff}]' -g '!node_modules' -g '!target' -g '!dist' -g '!*.log' \
-  -g '!**/lang/zh-CN.js' -g '!**/README.zh-CN.md' -g '!**/README.ja.md'
+rg --hidden -n '[\p{Han}\x{3000}-\x{303f}\x{ff01}-\x{ff60}]' \
+  -g '!node_modules' -g '!target' -g '!dist' -g '!.git' -g '!*.log' \
+  -g '!MiaoWuWeb/src/lang/zh-CN.js' -g '!README.zh-CN.md' -g '!MiaoWuWeb/README.ja.md'
 ```
 
 ## 接口概览

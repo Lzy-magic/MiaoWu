@@ -1,33 +1,31 @@
 ---
-name: Bug report（报告问题）
+name: Bug report
 about: Create a report to help us improve
 ---
 <!--
-    注意：为更好的解决你的问题，请参考模板提供完整信息，准确描述问题，信息不全的 issue 将被关闭。
-
-    Note: In order to better solve your problem, please refer to the template to provide complete information, accurately describe the problem, and the incomplete information issue will be closed.
+    Please follow this template and provide complete information with an accurate description of the problem. Issues with incomplete information will be closed.
 -->
 
 
-## Bug report（问题描述）
+## Bug report
 
-#### Steps to reproduce（问题复现步骤）
+#### Steps to reproduce
 <!--
 1. [xxx]
 2. [xxx]
 3. [xxxx]
 -->
 
-#### Screenshot or Gif（截图或动态图）
+#### Screenshot or GIF
 
 
-#### Link to minimal reproduction（最小可在线还原demo）
+#### Link to minimal reproduction
 
 <!--
 Please only use Codepen, JSFiddle, CodeSandbox or a github repo
 -->
 
-#### Other relevant information（格外信息）
+#### Other relevant information
 - Your OS:
 - Node.js version:
 - vue-element-admin version:
