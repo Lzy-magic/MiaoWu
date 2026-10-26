@@ -189,6 +189,12 @@ export default {
     publishSuccess: 'Article published',
     titleContentRequired: 'Please fill in the required title and content'
   },
+  demo: {
+    selectPlaceholder: 'Select'
+  },
+  documentation: {
+    articleSeries: 'Article series'
+  },
   imageCropper: {
     hint: 'Click or drag an image here',
     loading: 'Uploading...',

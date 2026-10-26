@@ -189,6 +189,12 @@ export default {
     publishSuccess: '发布文章成功',
     titleContentRequired: '请填写必要的标题和内容'
   },
+  demo: {
+    selectPlaceholder: '请选择'
+  },
+  documentation: {
+    articleSeries: '系列文章'
+  },
   imageCropper: {
     hint: '点击，或拖动图片至此处',
     loading: '正在上传……',

@@ -3,7 +3,7 @@
     <a class="document-btn" target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/">Documentation</a>
     <a class="document-btn" target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">Github Repository</a>
     <a class="document-btn" target="_blank" href="https://panjiachen.gitee.io/vue-element-admin-site/zh/">Docs (China mirror)</a>
-    <dropdown-menu class="document-btn" :items="articleList" title="Article series" />
+    <dropdown-menu class="document-btn" :items="articleList" :title="$t('documentation.articleSeries')" />
     <a class="document-btn" target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/zh/job/">Job referrals</a>
   </div>
 </template>
