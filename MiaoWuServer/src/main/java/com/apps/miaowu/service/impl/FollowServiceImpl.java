@@ -25,7 +25,7 @@ public class FollowServiceImpl implements FollowService {
     @Resource
     FollowMapper followMapper;
 
-    //关注用户
+    // Follow a user
     @Override
     public APIResult addOrDelFollow(Long userId, Long fansId) {
         Follow follow = new Follow();
@@ -33,17 +33,17 @@ public class FollowServiceImpl implements FollowService {
         follow.setFansId(fansId);
         FollowExample followExample = new FollowExample();
         followExample.createCriteria().andFansIdEqualTo(fansId).andUserIdEqualTo(userId);
-        //找不到user和article
+        // user or article not found
         if(userId == null || fansId == null){
             return APIResult.newResult(ResultCode.BadRequest,"invalid params",null);
         }
-        //用户不存在
+        // user does not exist
         else if(userMapper.selectByPrimaryKey(userId) == null || userMapper.selectByPrimaryKey(fansId) == null) {
             return APIResult.newResult(ResultCode.BadRequest,"Parameter Error",null);
         }
-        //重复关注
+        // already following
         else if(!followMapper.selectByExample(followExample).isEmpty()){
-            //取消关注 todo 未测试
+            // unfollow, TODO: untested
             try {
                 followMapper.deleteByExample(followExample);
                 return APIResult.newResult(ResultEnum.SUCCESS, null);
@@ -63,7 +63,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public APIResult findAllFollowsByUserId(Long userId) {
         FollowExample example = new FollowExample();
-        // 找到自己关注的所有user
+        // Find all users this user follows
         example.createCriteria().andFansIdEqualTo(userId);
         List<Follow> follows = followMapper.selectByExample(example);
         ArrayList<User> users = new ArrayList<>();
@@ -79,7 +79,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public APIResult findAllFansByUserId(Long userId) {
         FollowExample example = new FollowExample();
-        // 找到自己的所有粉丝
+        // Find all fans of this user
         example.createCriteria().andUserIdEqualTo(userId);
         List<Follow> follows = followMapper.selectByExample(example);
         ArrayList<User> users = new ArrayList<>();

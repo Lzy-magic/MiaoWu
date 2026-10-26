@@ -35,10 +35,10 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "", required = false),
             @ApiImplicitParam(name = "name", value = "", required = false),
-            //身份证号码可以先不需要，注册的门槛尽量放低
+            // The ID card number is optional for now, to keep registration easy
             @ApiImplicitParam(name = "idCode", value = "", required = true),
-//          思考 归属地的问题 可不可以通过号码直接判断
-            //前端传送数据过来的时候 直接加上国际区号。
+//          TODO: could the region be derived from the phone number?
+            // The frontend should send the number with its international dialing code.
 //            @ApiImplicitParam(name = "contry_id", value = "", required = true),
             @ApiImplicitParam(name = "phone", value = "", required = true),
             @ApiImplicitParam(name = "create_date", value = "", required = false),
@@ -62,10 +62,10 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "", required = false),
             @ApiImplicitParam(name = "name", value = "", required = false),
-            //身份证号码可以先不需要，注册的门槛尽量放低
+            // The ID card number is optional for now, to keep registration easy
             @ApiImplicitParam(name = "idCode", value = "", required = false),
-//          思考 归属地的问题 可不可以通过号码直接判断
-            //前端传送数据过来的时候 直接加上国际区号。
+//          TODO: could the region be derived from the phone number?
+            // The frontend should send the number with its international dialing code.
             @ApiImplicitParam(name = "country_id", value = "", required = true),
             @ApiImplicitParam(name = "phone", value = "", required = true),
             @ApiImplicitParam(name = "create_date", value = "", required = false),
@@ -77,7 +77,7 @@ public class UserController {
     }
 
     @NoneAuth
-    @ApiOperation(value = "获取用户全部信息",notes = "其中的token必须为对应用户id的token")
+    @ApiOperation(value = "Get all user info",notes = "The token must belong to the given user id")
     @GetMapping(value = "info")
     public APIResult info(String token) {
         return userService.getInfo(token);
@@ -90,7 +90,7 @@ public class UserController {
     }
 
     @NoneAuth
-    @ApiOperation(value = "获取用户部分信息")
+    @ApiOperation(value = "Get public user info")
     @GetMapping(value = "{id}")
     public APIResult findById(@PathVariable Long id){
         return userService.findById(id);

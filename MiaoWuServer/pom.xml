@@ -40,7 +40,7 @@
             </exclusions>
         </dependency>
 
-        <!-- rabbitmq依赖 -->
+        <!-- RabbitMQ dependency -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
@@ -128,7 +128,7 @@
             <version>1.18.12</version>
             <optional>true</optional>
         </dependency>
-        <!--        引入redis-->
+        <!-- Redis-->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
@@ -168,7 +168,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
-<!--        添加log4j2相关jar包-->
+<!-- log4j2 dependencies-->
 <!--                <dependency>-->
 <!--                    <groupId>org.apache.logging.log4j</groupId>-->
 <!--                    <artifactId>log4j-api</artifactId>-->
@@ -179,7 +179,7 @@
 <!--                    <artifactId>log4j-core</artifactId>-->
 <!--                    <version>2.7</version>-->
 <!--                </dependency>-->
-<!--         加上这个才能辨认到log4j2.yml文件-->
+<!-- required so that log4j2.yml is recognized-->
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>

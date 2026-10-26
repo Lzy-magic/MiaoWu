@@ -26,7 +26,7 @@
   </a>
 </p>
 
-English | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md) | [Spanish](./README.es.md)
+English | [Simplified Chinese](./README.zh-CN.md) | [Japanese](./README.ja.md) | [Spanish](./README.es.md)
 
 ## Introduction
 
@@ -44,7 +44,7 @@ English | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md) | [Spa
 
 - [Wiki](https://github.com/PanJiaChen/vue-element-admin/wiki)
 
-- [Gitee](https://panjiachen.gitee.io/vue-element-admin/) 国内用户可访问该地址在线预览
+- [Gitee](https://panjiachen.gitee.io/vue-element-admin/) mirror for users in mainland China
 
 - Base template recommends using: [vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)
 - Desktop: [electron-vue-admin](https://github.com/PanJiaChen/electron-vue-admin)

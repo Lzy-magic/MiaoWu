@@ -78,7 +78,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public APIResult deleteById(Long id) {
-        // 联表删除相关的赞表
+        // Also delete the related likes
         if ((articleMapper.selectByPrimaryKey(id) != null)) {
             articleMapper.deleteByPrimaryKey(id);
             ThumbUpExample thumbUpExample = new ThumbUpExample();
@@ -99,7 +99,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public APIResult<List<ArticleExtend>> findArticleWithAnimalById(Long id) {
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(id);
         } catch (MiaowuException miaowuException) {
@@ -118,7 +118,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public APIResult findArticleWithLabelById(Long id) {
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(id);
         } catch (MiaowuException miaowuException) {
@@ -131,13 +131,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public APIResult findArticleWithCommentById(Long articleId) {
-        //todo 未完成
+        // TODO: unfinished
         return APIResult.newResult(ResultEnum.NO_CONTENT, null);
     }
 
     @Override
     public APIResult cascadeFindAll() {
-        // 此处应该不这么写
+        // This should be written differently
         // List<ArticleExtend> articleExtends = articleMapperExtend.cascadeFindAll();
         // for(ArticleExtend articleExtend : articleExtends){
         // List<ArticleLabel> articleLabels = articleExtend.getArticleLabels();
@@ -152,7 +152,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public APIResult cascadeFindById(Long id) {
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(id);
         } catch (MiaowuException miaowuException) {
@@ -160,26 +160,26 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         HashMap res = new HashMap<String, Object>();
-        //文章信息
+        // Article info
         Article article = articleMapper.selectByPrimaryKey(id);
         res.put("article", article);
 
-        //文章空值校验
+        // Null check on the article
         try {
             varifyNullParam(article);
         } catch (MiaowuException miaowuException) {
             return APIResult.newResult(ResultEnum.NO_CONTENT, null);
         }
 
-        //评论信息
+        // Comments
         List<CommentExtend> commentExtends = commentMapperExtend.findByArticleIdWithUser(id);
         res.put("comments", commentExtends);
 
-        //标签信息
+        // Labels
         List<Label> labels = labelMapperExtend.findLabelByArticleId(id);
         res.put("labels", labels);
 
-        //用户信息
+        // User info
         User user = userMapper.selectByPrimaryKey(article.getAuthorId());
         user.setPassword(null);
         user.setIdCode(null);
@@ -209,23 +209,23 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public APIResult thumbUpOrDown(Long articleId, Long userId) {
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(articleId, userId);
         } catch (MiaowuException miaowuException) {
             return APIResult.newResult(ResultEnum.ILLEGAL_PARAM, null);
         }
 
-        //获取用户所有的点赞信息
+        // Get all likes of the user
         ThumbUpExample example = new ThumbUpExample();
         example.createCriteria().andUserIdEqualTo(userId);
         List<ThumbUp> thumbUps = thumbUpMapper.selectByExample(example);
 
-        //获取文章信息
+        // Get the article
         Article article = articleMapper.selectByPrimaryKey(articleId);
         ThumbUp find = new ThumbUp();
 
-        //查找该用户是否已经点赞过文章
+        // Check whether the user already liked the article
         for (ThumbUp thumbUp : thumbUps) {
             if (thumbUp.getArticleId().equals(articleId)) {
                 find = thumbUp;
@@ -233,36 +233,36 @@ public class ArticleServiceImpl implements ArticleService {
             }
         }
 
-        //用户未点赞过该文章
+        // The user has not liked the article
         if (find.getId() == null) {
-            //插入点赞信息
+            // Insert the like
             ThumbUp thumbUp = new ThumbUp();
             thumbUp.setArticleId(articleId);
             thumbUp.setUserId(userId);
             thumbUpMapper.insert(thumbUp);
 
-            //参数空值校验
+            // Null checks on parameters
             try {
                 varifyNullParam(article);
             } catch (MiaowuException miaowuException) {
                 return APIResult.newResult(ResultEnum.NO_CONTENT, null);
             }
 
-            //初始化文章点赞
+            // Initialize the like count
             if (article.getThumbUp() == null) {
                 article.setThumbUp(1L);
             } else {
                 article.setThumbUp(article.getThumbUp() + 1L);
             }
-            //更新文章表
+            // Update the article
             articleMapper.updateByPrimaryKey(article);
             return APIResult.newResult(ResultEnum.SUCCESS, article.getThumbUp() + 1L);
-        } else { //用户已点赞过该文章，取消点赞
+        } else { // already liked: remove the like
             thumbUpMapper.deleteByPrimaryKey(find.getId());
 
-            // 此处判断点赞数为不为null，主要是防黑客，系统运行正常下，此时的点赞数必定≥1
+            // The null check guards against tampering; normally the like count is >= 1 here
             if (article.getThumbUp() != null) {
-                //点赞数-1
+                // Decrement the like count
                 article.setThumbUp(article.getThumbUp() - 1L);
                 articleMapper.updateByPrimaryKey(article);
                 return APIResult.newResult(ResultEnum.SUCCESS,article.getThumbUp() - 1L);
@@ -294,7 +294,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public APIResult updateArticle(HttpServletRequest request, ArticleWithBLOBs article) {
-        // token验证
+        // Token check
         String authStr = request.getHeader(NormalConstant.AUTHORIZATION);
         TokenModel model = tokenHelper.get(authStr);
         String userId = model.getUserId();
@@ -302,7 +302,7 @@ public class ArticleServiceImpl implements ArticleService {
             return APIResult.newResult(ResultEnum.UNAUTH, null);
         }
 
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(article);
         } catch (MiaowuException miaowuException) {
@@ -317,7 +317,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public APIResult findAllWithClipByUserIdOrderByUpdateDesc(Long userId) {
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(userId);
         } catch (MiaowuException miaowuException) {
@@ -331,7 +331,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public APIResult findArticleByAuthorIdOrderByUpdateDesc(Long authorId) {
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(authorId);
         } catch (MiaowuException miaowuException) {
@@ -348,10 +348,10 @@ public class ArticleServiceImpl implements ArticleService {
         }
     }
 
-    // todo 未测试
+    // TODO: untested
     @Override
     public APIResult findFollowsArticleByUserIdOrderByUpdateDesc(Long userId) {
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(userId);
         } catch (MiaowuException miaowuException) {
@@ -362,7 +362,7 @@ public class ArticleServiceImpl implements ArticleService {
         List<ArticleExtend> articleExtends = articleMapperExtend
                 .selectFollowsArticleWithAuthorNameByUserIdOrderByUpdateDesc(userId);
 
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(user, articleExtends);
         } catch (MiaowuException miaowuException) {
@@ -384,7 +384,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public APIResult findArticleWithLabelByPage(Integer count, Integer page) {
-        //参数空值校验
+        // Null checks on parameters
         try {
             varifyNullParam(count,page);
         } catch (MiaowuException miaowuException) {

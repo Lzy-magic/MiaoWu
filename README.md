@@ -1,6 +1,6 @@
 # MiaoWu - Stray Animal Rescue Platform
 
-**English** | [简体中文](README.zh-CN.md)
+**English** | [Simplified Chinese](README.zh-CN.md)
 
 MiaoWu is a stray-animal rescue and adoption platform. It keeps animal records in one place and lets users publish articles and updates about animals they found or adopted, follow other users, comment, like, bookmark articles and save animals.
 
@@ -21,6 +21,7 @@ The repository has two parts:
 - [Configuration](#configuration)
 - [Running the Backend](#running-the-backend)
 - [Running the Frontend](#running-the-frontend)
+- [Internationalization (i18n)](#internationalization-i18n)
 - [API Overview](#api-overview)
 - [Known Issues](#known-issues)
 - [License](#license)
@@ -257,6 +258,29 @@ Other scripts: `npm run build:prod`, `npm run build:stage`, `npm run lint`, `npm
 | `VUE_APP_API_URL` | empty | If set (e.g. `http://localhost:8088/`), the app calls the backend directly instead of through the proxy. `.env.production` / `.env.staging` set it, since built bundles have no dev proxy |
 
 Example: `VUE_APP_USE_MOCK=false npm run dev`.
+
+## Internationalization (i18n)
+
+The web UI uses [vue-i18n](https://kazupon.github.io/vue-i18n/) v8. English (`en`) is the default and Simplified Chinese (`zh-CN`) is also shipped.
+
+- Locale files live in `MiaoWuWeb/src/lang/`: `index.js` creates the i18n instance, `en.js` and `zh-CN.js` hold the messages, grouped by namespace (`common`, `route`, `navbar`, `article`, `animal`, `user`, `login`, `profile`, ...).
+- The initial language is the saved choice (cookie / `localStorage` key `language`), then the browser language, then `en`.
+- Switch languages with the globe icon (`LangSelect`) in the navbar. The choice is persisted, and Element UI components, route titles, breadcrumbs, tags and the document title follow it.
+- Route `meta.title` values are keys under `route.*` and are translated by `generateTitle` in `src/utils/i18n.js`.
+
+**Adding a key:** add it to the right namespace in both `en.js` and `zh-CN.js`, then use `$t('namespace.key')` in templates/components or `i18n.t(...)` (import `@/lang`) in plain JS.
+
+**Adding a locale:** create `src/lang/<code>.js` with the same keys, import it together with the matching Element UI locale in `src/lang/index.js`, add it to `messages` (`supportedLanguages` is derived from it), and add a `langSelect.name` entry for it.
+
+**Rule: no Chinese characters in code.** Source code, comments, logs and API messages must be in English. Chinese text is only allowed in `MiaoWuWeb/src/lang/zh-CN.js` and `README.zh-CN.md`. Check with:
+
+README.ja.md is excluded only because it is Japanese documentation and contains Han kanji.
+
+```bash
+rg --hidden -n '[\p{Han}\x{3000}-\x{303f}\x{ff01}-\x{ff60}]' \
+  -g '!node_modules' -g '!target' -g '!dist' -g '!.git' -g '!*.log' \
+  -g '!MiaoWuWeb/src/lang/zh-CN.js' -g '!README.zh-CN.md' -g '!MiaoWuWeb/README.ja.md'
+```
 
 ## API Overview
 

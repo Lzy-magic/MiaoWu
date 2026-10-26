@@ -14,7 +14,7 @@ public class MyWebMvcConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //这里res下存在的资源不拦截，但是随便输一个不存在的/res/asdasd，按理说应该也不会被拦截，只是报404，然而却被拦截了
+        // Existing resources under res are not intercepted; a missing path such as /res/asdasd should just 404, but it is intercepted
 
         registry.addInterceptor(loginInterceptor).excludePathPatterns("/res/**", "/page/**");
     }

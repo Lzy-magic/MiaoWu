@@ -11,8 +11,8 @@
 
       <div class="title-container">
         <h3 class="title">
-          <el-button type="primary" style="position: absolute; left: 0" @click="back">返回</el-button>
-          注册
+          <el-button type="primary" style="position: absolute; left: 0" @click="back">{{ $t('common.back') }}</el-button>
+          {{ $t('user.register') }}
         </h3>
       </div>
 
@@ -23,7 +23,7 @@
         <el-input
           ref="phone"
           v-model="registerForm.phone"
-          placeholder="电话号码"
+          :placeholder="$t('user.phone')"
           name="phone"
           type="text"
           tabindex="1"
@@ -41,7 +41,7 @@
             ref="password"
             v-model="registerForm.password"
             :type="passwordType"
-            placeholder="密码"
+            :placeholder="$t('user.password')"
             name="password"
             tabindex="2"
             maxlength="16"
@@ -65,7 +65,7 @@
             ref="cpwd"
             v-model="cpwd"
             :type="passwordType"
-            placeholder="再次输入密码"
+            :placeholder="$t('user.confirmPassword')"
             name="cpwd"
             tabindex="3"
             maxlength="16"
@@ -86,7 +86,7 @@
         <el-input
           ref="name"
           v-model="registerForm.name"
-          placeholder="昵称"
+          :placeholder="$t('user.nickname')"
           name="name"
           type="text"
           tabindex="4"
@@ -101,7 +101,7 @@
         <el-input
           ref="idCode"
           v-model="registerForm.idCode"
-          placeholder="身份证"
+          :placeholder="$t('user.idCard')"
           name="idCode"
           type="text"
           maxlength="18"
@@ -114,7 +114,7 @@
         type="primary"
         style="width:100%;margin-bottom:30px;"
         @click.native.prevent="handleRegister"
-      >注册
+      >{{ $t('user.register') }}
       </el-button>
 
     </el-form>
@@ -129,35 +129,40 @@ import qs from 'querystring'
 import { ResultCode } from '@/utils/ResultCode'
 
 export default {
-  // TODO 确认密码，以及用户名的check
+  // TODO: validate password confirmation and the user name
   name: 'Register',
   data() {
     var self = this
     const phoneRegex = new RegExp('((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$')
-    const isPhoneMsg = '电话号码不合法'
+    // evaluated lazily so the message follows the current language
+    const isPhoneMsg = () => self.$t('user.invalidPhone')
     const isPhone = (rule, value, callback) => {
-      self.validator(rule, value, callback, isPhoneMsg, phoneRegex)
+      self.validator(rule, value, callback, isPhoneMsg(), phoneRegex)
     }
     const idCodeRegex = new RegExp('^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$|^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$')
-    const isIdCodeMsg = '身份证长度在 15 到 18 个字符'
+    // evaluated lazily so the message follows the current language
+    const isIdCodeMsg = () => self.$t('user.idCardLength')
     const isIdCode = (rule, value, callback) => {
-      self.validator(rule, value, callback, isIdCodeMsg, idCodeRegex)
+      self.validator(rule, value, callback, isIdCodeMsg(), idCodeRegex)
     }
-    // 第一代15位？？第二代18位
+    // First-generation IDs have 15 digits, second-generation IDs have 18
     const pwdRegex = new RegExp('^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$')
-    const isPwdCodeMsg = '密码为至少6位，至多16位的包含数字和字母的组合'
+    // evaluated lazily so the message follows the current language
+    const isPwdCodeMsg = () => self.$t('user.passwordRule')
     const isPwd = (rule, value, callback) => {
-      self.validator(rule, value, callback, isPwdCodeMsg, pwdRegex)
+      self.validator(rule, value, callback, isPwdCodeMsg(), pwdRegex)
     }
     const userNameRegex = new RegExp('^[a-zA-z\u2E80-\u9FFF]{0,12}$')
-    const isUserNameMsg = '用户名长度在 1 到 12 个字符'
+    // evaluated lazily so the message follows the current language
+    const isUserNameMsg = () => self.$t('user.nicknameLength')
     const isUserName = (rule, value, callback) => {
-      self.validator(rule, value, callback, userNameRegex, isUserNameMsg)
+      self.validator(rule, value, callback, userNameRegex, isUserNameMsg())
     }
-    const isSamePwdMsg = '两次密码不一致'
+    // evaluated lazily so the message follows the current language
+    const isSamePwdMsg = () => self.$t('user.passwordMismatch')
     const isSamePwd = (rule, value, callback) => {
       if (self.cpwd !== self.registerForm.password) {
-        callback(new Error(isSamePwdMsg))
+        callback(new Error(isSamePwdMsg()))
       }
     }
     return {
@@ -185,19 +190,19 @@ export default {
           return time.getTime() > Date.now()
         },
         shortcuts: [{
-          text: '今天',
+          text: this.$t('user.today'),
           onClick(picker) {
             picker.$emit('pick', new Date())
           }
         }, {
-          text: '昨天',
+          text: this.$t('user.yesterday'),
           onClick(picker) {
             const date = new Date()
             date.setTime(date.getTime() - 3600 * 1000 * 24)
             picker.$emit('pick', date)
           }
         }, {
-          text: '一周前',
+          text: this.$t('user.weekAgo'),
           onClick(picker) {
             const date = new Date()
             date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
@@ -205,7 +210,7 @@ export default {
           }
         }]
       },
-      // todo 确认密码
+      // TODO: confirm password
       capsTooltip: false,
       passwordType: 'password',
       loading: false
@@ -238,12 +243,12 @@ export default {
       })
     },
     getInfoFromIdCode(idCode) {
-      // 获取出生日期
+      // Extract the date of birth
       var birthday = idCode.substring(6, 10) + '-' + idCode.substring(10, 12) + '-' + idCode.substring(12, 14)
       // birthday = parseStrToDate(birthday);
       this.registerForm.birthday = birthday
 
-      // 获取性别
+      // Extract the gender
       if (parseInt(idCode.substr(16, 1)) % 2 === 1) {
         this.registerForm.gender = 'man'
       } else {
@@ -255,13 +260,13 @@ export default {
       this.$store.dispatch('user/register', this.registerForm)
       // test
       // this.registerForm = {
-      //   name: '小小',
+      //   name: 'Tiny',
       //   password: 'icelzyREMOVED_PASSWORD',
       //   phone: '18300000000',
       //   idCode: '450881199708081173',
       // }
       if (Object.keys(this.registerForm).length !== 4 && this.cpwd !== '') {
-        this.$message.error('请完善信息后再注册喵~')
+        this.$message.error(this.$t('user.incomplete'))
         this.loading = false
         return
       }
@@ -285,20 +290,20 @@ export default {
             }
             if (result.code === ResultCode.SuccessCode) {
               this.loading = false
-              this.$message({ message: '注册成功喵~', type: 'success' })
+              this.$message({ message: this.$t('user.registerSuccess'), type: 'success' })
               this.loginForm.username = this.registerForm.username
               this.loginForm.password = this.registerForm.password
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
             } else if (result.code === ResultCode.ServerInnerError) {
-              this.$message.error('服务器出错喵~')
+              this.$message.error(this.$t('common.serverError'))
               this.loading = false
             } else if (result.code === ResultCode.DATA_ALREADY_EXISTEDINT) {
-              this.$message.error('该电话号码已经被注册喵~')
+              this.$message.error(this.$t('user.phoneTaken'))
               this.loading = false
             }
           })
         } else {
-          this.$message.error('注册信息不合法喵~')
+          this.$message.error(this.$t('user.invalidInfo'))
           this.loading = false
         }
       })
@@ -308,7 +313,7 @@ export default {
 }
 </script>
 <style lang="scss">
-  /* 修复input 背景不协调 和光标变色 */
+  /* Fix the mismatched input background and caret color */
   /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
   $bg: #283443;

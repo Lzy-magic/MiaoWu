@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import i18n from '@/lang'
 import Dropzone from 'dropzone'
 import 'dropzone/dist/dropzone.css'
 // import { getToken } from 'api/qiniu';
@@ -27,7 +28,7 @@ export default {
     },
     defaultMsg: {
       type: String,
-      default: '上传图片'
+      default: () => i18n.t('common.uploadImage')
     },
     acceptedFiles: {
       type: String,
@@ -101,7 +102,7 @@ export default {
       acceptedFiles: this.acceptedFiles,
       autoProcessQueue: this.autoProcessQueue,
       dictDefaultMessage: '<i style="margin-top: 3em;display: inline-block" class="material-icons">' + this.defaultMsg + '</i><br>Drop files here to upload',
-      dictMaxFilesExceeded: '只能一个图',
+      dictMaxFilesExceeded: this.$t('common.onlyOneImage'),
       previewTemplate: '<div class="dz-preview dz-file-preview">  <div class="dz-image" style="width:' + this.thumbnailWidth + 'px;height:' + this.thumbnailHeight + 'px" ><img style="width:' + this.thumbnailWidth + 'px;height:' + this.thumbnailHeight + 'px" data-dz-thumbnail /></div>  <div class="dz-details"><div class="dz-size"><span data-dz-size></span></div> <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>  <div class="dz-error-message"><span data-dz-errormessage></span></div>  <div class="dz-success-mark"> <i class="material-icons">done</i> </div>  <div class="dz-error-mark"><i class="material-icons">error</i></div></div>',
       init() {
         const val = vm.defaultImg
@@ -127,7 +128,7 @@ export default {
         }
       },
       accept: (file, done) => {
-        /* 七牛*/
+        /* Qiniu */
         // const token = this.$store.getters.token;
         // getToken(token).then(response => {
         //   file.token = response.data.qiniu_token;

@@ -4,14 +4,14 @@
       <el-select
         v-show="isSelectAnimalShow"
         v-model="article.animalId"
-        placeholder="请选择要申请救助的动物"
+        :placeholder="$t('article.selectAnimal')"
         style="width: 200px;"
       >
         <el-option v-for="item in foundAnimals" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
       <el-input
         v-model="article.title"
-        placeholder="请输入标题..."
+        :placeholder="$t('article.titlePlaceholder')"
         style="width: 400px;margin-left: 10px"
       />
       <el-tag
@@ -48,19 +48,20 @@
         <mavon-editor
           ref="md"
           v-model="article.mdContent"
+          :language="editorLanguage"
           style="height: 100%;width: 100%;"
           @imgAdd="imgAdd"
           @imgDel="imgDel"
         />
       </div>
       <div style="display: flex;align-items: center;margin-top: 15px;justify-content: flex-end">
-        <el-button v-if="from!=undefined" @click="cancelEdit">放弃修改</el-button>
+        <el-button v-if="from!=undefined" @click="cancelEdit">{{ $t('article.discardChanges') }}</el-button>
         <template v-if="from==undefined || from=='draft'">
-          <!--          <el-button @click="submit(0)">保存到草稿箱</el-button>-->
-          <el-button type="primary" @click="submit(1)">发表文章</el-button>
+          <!--          <el-button @click="submit(0)">Save to drafts</el-button>-->
+          <el-button type="primary" @click="submit(1)">{{ $t('article.publish') }}</el-button>
         </template>
         <template v-else>
-          <el-button type="primary" @click="submit(1)">保存修改</el-button>
+          <el-button type="primary" @click="submit(1)">{{ $t('article.saveChanges') }}</el-button>
         </template>
       </div>
     </el-main>
@@ -77,7 +78,7 @@ import qs from 'querystring'
 import 'mavon-editor/dist/css/index.css'
 // import {isNotNullORBlank} from '../utils/utils'
 
-// 可以通过 mavonEditor.markdownIt 获取解析器markdown-it对象
+// The markdown-it parser instance is available via mavonEditor.markdownIt
 
 export default {
   components: {
@@ -102,6 +103,11 @@ export default {
       isUpdateMode: false
     }
   },
+  computed: {
+    editorLanguage() {
+      return this.$i18n.locale === 'zh-CN' ? 'zh-CN' : 'en'
+    }
+  },
   mounted: function() {
     this.getFoundAnimals()
     var from = this.$route.query.from
@@ -120,7 +126,7 @@ export default {
           )
           .then(res => {
             if (res.data.authorId !== self.$store.getters.id) {
-              self.$message.error('没有权限修改哦')
+              self.$message.error(self.$t('article.noPermission'))
               self.$router.go(-1)
               return
             }
@@ -136,9 +142,9 @@ export default {
       this.$router.go(-1)
     },
     imgAdd(pos, $file) {
-      // todo 若不成功，需要删除图片
+      // TODO: delete the uploaded image if this fails
       var _this = this
-      // 第一步.将图片上传到服务器.
+      // Step 1: upload the image to the server.
       var formdata = new FormData()
       formdata.append('image', $file)
       const config = {
@@ -189,7 +195,7 @@ export default {
         const articleId = res
         if (self.article.dynamicTags) {
           self.submitTags(articleId).then((result) => {
-            if (result) { this.$message.success('发布文章成功啦喵') }
+            if (result) { this.$message.success(this.$t('article.publishSuccess')) }
           }).catch(e => {
             this.delArticle(articleId)
           })
@@ -218,10 +224,10 @@ export default {
       }
       request.request(config).then(res => {
         if (res.code === ResultCode.SuccessCode) {
-          self.$message.success('修改文章成功啦喵')
+          self.$message.success(self.$t('article.updateSuccess'))
           self.$router.go(-1)
         } else if (res.code === ResultCode.BadRequest) {
-          self.$message.success('出错啦~')
+          self.$message.success(self.$t('common.error'))
           self.$router.go(-1)
         }
         self.loading = false
@@ -232,15 +238,15 @@ export default {
         const self = this
 
         if (!self.article.animalId) {
-          self.$message.error('还没有选择动物哦~')
+          self.$message.error(self.$t('article.noAnimal'))
           return
         }
         if (!self.article.title) {
-          self.$message.error('还没有写标题哦~')
+          self.$message.error(self.$t('article.noTitle'))
           return
         }
         if (!self.article.mdContent) {
-          self.$message.error('还没有写内容哦~')
+          self.$message.error(self.$t('article.noContent'))
           return
         }
         const url = settings.apiUrl + 'articles'
@@ -271,7 +277,7 @@ export default {
             } else if (res.code === ResultCode.BadRequest) {
               self.$message.error(res.message)
             } else if (res.code === ResultCode.ServerInnerError) {
-              this.$message.error('服务器出错喵~')
+              this.$message.error(this.$t('common.serverError'))
               reject()
             }
           })
@@ -309,7 +315,7 @@ export default {
               self.$message.error(res.message)
               reject()
             } else if (res.code === ResultCode.ServerInnerError) {
-              self.$message.error('服务器出错喵~')
+              self.$message.error(self.$t('common.serverError'))
               reject()
             }
           })
@@ -349,12 +355,12 @@ export default {
             this.foundAnimals = res.data
             this.loading = false
           } else if (res.code === ResultCode.BadRequest) {
-            self.$message.error('还没有发现动物哦~')
+            self.$message.error(self.$t('article.noAnimalFound'))
             // self.$message.error(res.message);
             this.loading = false
             return
           } else if (res.code === ResultCode.ServerInnerError) {
-            this.$message.error('服务器出错喵~')
+            this.$message.error(this.$t('common.serverError'))
             this.loading = false
           }
         })

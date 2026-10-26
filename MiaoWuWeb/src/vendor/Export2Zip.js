@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'
+import i18n from '@/lang'
 
 export function export_txt_to_zip(th, jsonData, txtName, zipName) {
   const zip = new JSZip()
@@ -19,6 +20,6 @@ export function export_txt_to_zip(th, jsonData, txtName, zipName) {
   }).then((blob) => {
     saveAs(blob, `${zip_name}.zip`)
   }, (err) => {
-    alert('导出失败')
+    alert(i18n.t('common.exportFailed'))
   })
 }

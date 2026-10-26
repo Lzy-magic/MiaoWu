@@ -21,6 +21,7 @@
 - [配置说明](#配置说明)
 - [运行后端](#运行后端)
 - [运行前端](#运行前端)
+- [国际化（i18n）](#国际化i18n)
 - [接口概览](#接口概览)
 - [已知问题](#已知问题)
 - [许可证](#许可证)
@@ -257,6 +258,29 @@ npm run dev        # http://localhost:9527
 | `VUE_APP_API_URL` | 空 | 设置后（如 `http://localhost:8088/`）前端直接请求后端，不走代理。`.env.production` / `.env.staging` 已设置，因为打包产物没有开发代理 |
 
 示例：`VUE_APP_USE_MOCK=false npm run dev`。
+
+## 国际化（i18n）
+
+前端使用 [vue-i18n](https://kazupon.github.io/vue-i18n/) v8，默认语言为英文（`en`），同时提供简体中文（`zh-CN`）。
+
+- 语言文件位于 `MiaoWuWeb/src/lang/`：`index.js` 创建 i18n 实例，`en.js` 与 `zh-CN.js` 按命名空间（`common`、`route`、`navbar`、`article`、`animal`、`user`、`login`、`profile` 等）存放文案。
+- 初始语言优先取已保存的选择（cookie / `localStorage` 键 `language`），其次是浏览器语言，最后回退到 `en`。
+- 通过导航栏的地球图标（`LangSelect`）切换语言，选择会被保存；Element UI 组件、路由标题、面包屑、标签页和页面标题都会随之切换。
+- 路由 `meta.title` 为 `route.*` 下的键，由 `src/utils/i18n.js` 中的 `generateTitle` 翻译。
+
+**新增文案键：**在 `en.js` 和 `zh-CN.js` 的对应命名空间中同时添加，然后在模板/组件中使用 `$t('namespace.key')`，在普通 JS 中引入 `@/lang` 使用 `i18n.t(...)`。
+
+**新增语言：**创建 `src/lang/<code>.js`（键与现有文件一致），在 `src/lang/index.js` 中连同对应的 Element UI 语言包一起引入，加入 `messages`（`supportedLanguages` 由其自动生成），并为其添加 `langSelect.name`。
+
+**规则：代码中不得出现中文。**源代码、注释、日志和接口消息必须使用英文，中文只允许出现在 `MiaoWuWeb/src/lang/zh-CN.js` 和 `README.zh-CN.md` 中。检查命令：
+
+README.ja.md 仅因其为包含汉字的日语文档而被排除。
+
+```bash
+rg --hidden -n '[\p{Han}\x{3000}-\x{303f}\x{ff01}-\x{ff60}]' \
+  -g '!node_modules' -g '!target' -g '!dist' -g '!.git' -g '!*.log' \
+  -g '!MiaoWuWeb/src/lang/zh-CN.js' -g '!README.zh-CN.md' -g '!MiaoWuWeb/README.ja.md'
+```
 
 ## 接口概览
 

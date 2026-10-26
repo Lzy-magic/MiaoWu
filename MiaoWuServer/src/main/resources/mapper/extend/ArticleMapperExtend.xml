@@ -106,7 +106,7 @@
         WHERE art.id = #{id,jdbcType=BIGINT};
     </select>
 
-<!--    todo 增加标签-->
+<!--    TODO: add labels-->
     <select id="selectArticleWithLabelByPage" parameterType="java.lang.Integer" resultMap="com.apps.miaowu.dao.ArticleMapper.BaseResultMap" >
         SELECT a.*
         FROM article a
@@ -165,7 +165,7 @@
         LEFT JOIN article a
         ON c.article_id = a.id
         WHERE a.id = #{id,jdbcType=BIGINT};
---         文章一对一
+--         article one-to-one
     </select>
     <select id="selectCommentArticleByArticleId" resultType="com.apps.miaowu.bean.extend.ArticleExtend">
         SELECT a.*,c.id comment_id, c.content comment_content

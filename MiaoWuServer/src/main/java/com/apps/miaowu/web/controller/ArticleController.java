@@ -31,7 +31,7 @@ public class ArticleController {
             @ApiImplicitParam(name = "lastUpdate", value = "", required = false),
             @ApiImplicitParam(name = "thumbUp", value = "0", required = false),
             @ApiImplicitParam(name = "animalId", value = "", required = false),
-            //1是空间，2是救助文
+            // 1 = timeline post, 2 = rescue article
             @ApiImplicitParam(name = "type", value = "", required = true),
     })
     public APIResult addArticle(ArticleWithBLOBs article) {

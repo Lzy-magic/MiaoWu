@@ -79,7 +79,7 @@
 import Tinymce from '@/components/Tinymce'
 import Upload from '@/components/Upload/SingleImage3'
 import MDinput from '@/components/MDinput'
-import Sticky from '@/components/Sticky' // 粘性header组件
+import Sticky from '@/components/Sticky' // sticky header component
 import { validURL } from '@/utils/validate'
 import { fetchArticle } from '@/api/article'
 import { searchUser } from '@/api/remote-search'
@@ -88,12 +88,12 @@ import { CommentDropdown, PlatformDropdown, SourceUrlDropdown } from './Dropdown
 
 const defaultForm = {
   status: 'draft',
-  title: '', // 文章题目
-  content: '', // 文章内容
-  content_short: '', // 文章摘要
-  source_uri: '', // 文章外链
-  image_uri: '', // 文章图片
-  display_time: undefined, // 前台展示时间
+  title: '', // article title
+  content: '', // article content
+  content_short: '', // article summary
+  source_uri: '', // external article link
+  image_uri: '', // article image
+  display_time: undefined, // display time on the front end
   id: undefined,
   platforms: ['a-platform'],
   comment_disabled: false,
@@ -113,10 +113,10 @@ export default {
     const validateRequire = (rule, value, callback) => {
       if (value === '') {
         this.$message({
-          message: rule.field + '为必传项',
+          message: this.$t('common.required', { field: rule.field }),
           type: 'error'
         })
-        callback(new Error(rule.field + '为必传项'))
+        callback(new Error(this.$t('common.required', { field: rule.field })))
       } else {
         callback()
       }
@@ -127,10 +127,10 @@ export default {
           callback()
         } else {
           this.$message({
-            message: '外链url填写不正确',
+            message: this.$t('example.invalidSourceUrl'),
             type: 'error'
           })
-          callback(new Error('外链url填写不正确'))
+          callback(new Error(this.$t('example.invalidSourceUrl')))
         }
       } else {
         callback()
@@ -210,8 +210,8 @@ export default {
         if (valid) {
           this.loading = true
           this.$notify({
-            title: '成功',
-            message: '发布文章成功',
+            title: this.$t('common.success'),
+            message: this.$t('example.publishSuccess'),
             type: 'success',
             duration: 2000
           })
@@ -226,13 +226,13 @@ export default {
     draftForm() {
       if (this.postForm.content.length === 0 || this.postForm.title.length === 0) {
         this.$message({
-          message: '请填写必要的标题和内容',
+          message: this.$t('example.titleContentRequired'),
           type: 'warning'
         })
         return
       }
       this.$message({
-        message: '保存成功',
+        message: this.$t('common.saveSuccess'),
         type: 'success',
         showClose: true,
         duration: 1000

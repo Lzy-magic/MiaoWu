@@ -1,23 +1,23 @@
 <template>
-  <!--todo 过滤器 <-->
+  <!--TODO: filters <-->
   <el-form>
-    <el-form-item label="昵称">
+    <el-form-item :label="$t('user.nickname')">
       <el-input v-model="form.name" @input="change($event)" />
     </el-form-item>
-    <el-form-item label="密码">
+    <el-form-item :label="$t('user.password')">
       <el-input v-model="form.password" @input="change($event)" />
     </el-form-item>
-    <el-form-item label="身份证">
+    <el-form-item :label="$t('user.idCard')">
       <el-input v-model="form.idCode" :disable="false" @input="change($event)" />
     </el-form-item>
-    <el-form-item label="电话号码">
+    <el-form-item :label="$t('user.phone')">
       <el-input v-model="form.phone" @input="change($event)" />
     </el-form-item>
     <!--  <el-form-item label="Email">-->
     <!--    <el-input v-model.trim="user.email" />-->
     <!--  </el-form-item>-->
     <el-form-item>
-      <el-button type="primary" @click="submit">提交修改</el-button>
+      <el-button type="primary" @click="submit">{{ $t('profile.submitChanges') }}</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -82,10 +82,10 @@ export default {
             return
           }
           if (result.code === ResultCode.SuccessCode) {
-            this.$message.success('更新信息成功啦喵')
+            this.$message.success(this.$t('profile.updateSuccess'))
             this.loading = false
           } else if (result.code === ResultCode.BadRequest) {
-            this.$message.error('参数错误')
+            this.$message.error(this.$t('profile.paramError'))
             this.loading = false
           }
         })

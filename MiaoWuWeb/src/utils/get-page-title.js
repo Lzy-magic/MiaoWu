@@ -1,10 +1,10 @@
-import defaultSettings from '@/settings'
-
-const title = defaultSettings.title || 'Vue Element Admin'
+import i18n from '@/lang'
+import { generateTitle } from '@/utils/i18n'
 
 export default function getPageTitle(pageTitle) {
+  const title = i18n.t('common.appTitle')
   if (pageTitle) {
-    return `${pageTitle} - ${title}`
+    return `${generateTitle(pageTitle)} - ${title}`
   }
   return `${title}`
 }

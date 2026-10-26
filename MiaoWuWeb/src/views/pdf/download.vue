@@ -160,7 +160,7 @@ export default {
     border: 0;
   }
 
-  /* 解决 IE6-7 图片缩放锯齿问题 */
+  /* fix jagged image scaling in IE6-7 */
   img {
     -ms-interpolation-mode: bicubic;
   }

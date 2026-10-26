@@ -8,7 +8,7 @@
       filterable
       default-first-option
       remote
-      placeholder="Search"
+      :placeholder="$t('navbar.search')"
       class="header-search-select"
       @change="change"
     >
@@ -22,6 +22,7 @@
 // make search results more in line with expectations
 import Fuse from 'fuse.js'
 import path from 'path'
+import { generateTitle } from '@/utils/i18n'
 
 export default {
   name: 'HeaderSearch',
@@ -37,10 +38,17 @@ export default {
   computed: {
     routes() {
       return this.$store.getters.permission_routes
+    },
+    language() {
+      return this.$store.getters.language
     }
   },
   watch: {
     routes() {
+      this.searchPool = this.generateRoutes(this.routes)
+    },
+    language() {
+      // rebuild the search pool so titles follow the selected language
       this.searchPool = this.generateRoutes(this.routes)
     },
     searchPool(list) {
@@ -109,7 +117,7 @@ export default {
         }
 
         if (router.meta && router.meta.title) {
-          data.title = [...data.title, router.meta.title]
+          data.title = [...data.title, generateTitle(router.meta.title)]
 
           if (router.redirect !== 'noRedirect') {
             // only push the routes with title

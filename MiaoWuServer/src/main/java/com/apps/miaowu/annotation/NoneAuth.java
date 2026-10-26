@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 
 /**
- * 使用本注解的方法不会进行登录验证
+ * Methods with this annotation skip the login check
  */
 @Documented
 @Retention(RUNTIME)

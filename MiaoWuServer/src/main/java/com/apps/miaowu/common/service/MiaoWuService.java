@@ -4,7 +4,7 @@ import com.apps.miaowu.common.exception.MiaowuException;
 import com.apps.miaowu.constant.NormalConstant;
 
 /**
- * @author 梁键兴
+ * @author Liang Jianxing
  */
 public interface MiaoWuService {
 
